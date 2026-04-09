@@ -52,11 +52,11 @@
   }
   .tabs::-webkit-scrollbar{display:none}
   .tab{
-    flex:1;flex-shrink:0;min-width:84px;
+    flex:0 0 auto;
     background:none;border:none;border-right:1px solid rgba(160,56,32,.35);
     color:rgba(240,224,200,.4);font-family:'Crimson Pro',serif;
     font-size:.78rem;letter-spacing:2px;text-transform:uppercase;
-    padding:12px 10px;cursor:pointer;
+    padding:12px 16px;cursor:pointer;
     transition:color .2s ease,background .2s ease;
     display:flex;align-items:center;justify-content:center;gap:7px;
     white-space:nowrap;
@@ -97,7 +97,7 @@
   .menu-item:hover .item-price,.menu-item.open .item-price{color:var(--neon);text-shadow:0 0 8px var(--neon-glow)}
   .item-price small{font-size:.68rem;color:rgba(196,72,40,.55);font-family:'Crimson Pro',serif}
   .item-desc{color:rgba(240,224,200,.42);font-size:.87rem;font-style:italic;grid-column:1;grid-row:2;line-height:1.4}
-  .item-badges{grid-column:1/-1;grid-row:3;display:flex;gap:5px;flex-wrap:wrap;margin-top:2px}
+  .item-badges{grid-column:1;grid-row:3;display:flex;gap:5px;flex-wrap:wrap;margin-top:2px}
   .badge{font-size:.58rem;letter-spacing:1.5px;text-transform:uppercase;padding:2px 6px;border:1px solid;font-family:'Crimson Pro',serif}
   .badge-popular,.badge-new{border-color:var(--neon);color:var(--neon);text-shadow:0 0 6px var(--neon-glow)}
   .badge-recommend,.badge-hot{border-color:var(--brick-lite);color:var(--brick-lite)}
@@ -123,15 +123,112 @@
   .loading{text-align:center;padding:60px;color:rgba(232,255,71,.4);font-style:italic;letter-spacing:2px}
 
   /* ─── MOBILE ≤600px ─── */
+  /* ITEM ADD BUTTON */
+  .item-add{
+    grid-column:2;grid-row:2;align-self:center;justify-self:end;
+    width:28px;height:28px;background:rgba(232,255,71,.07);
+    border:1px solid rgba(232,255,71,.25);color:rgba(232,255,71,.5);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:all .15s;flex-shrink:0;
+    font-size:1.2rem;line-height:1;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .item-add:hover,.item-add:active{background:var(--neon);color:var(--dark);border-color:var(--neon)}
+  @keyframes addPop{0%{transform:scale(1)}50%{transform:scale(1.35)}100%{transform:scale(1)}}
+  .item-add.pop{animation:addPop .22s ease}
+
+  /* CART FAB */
+  @keyframes fabIn{from{opacity:0;transform:scale(.7) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+  @keyframes fabBounce{0%{transform:scale(1)}40%{transform:scale(1.18)}70%{transform:scale(.93)}100%{transform:scale(1)}}
+  .cart-fab{
+    position:fixed;bottom:28px;right:20px;z-index:80;
+    width:54px;height:54px;background:var(--neon);border:none;
+    display:none;align-items:center;justify-content:center;
+    cursor:pointer;box-shadow:0 4px 20px rgba(232,255,71,.35);
+    transition:background .15s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .cart-fab.visible{display:flex;animation:fabIn .3s cubic-bezier(.22,1,.36,1) both}
+  .cart-fab:active{background:#d4eb30}
+  .cart-fab svg{width:22px;height:22px;fill:var(--dark)}
+  .cart-fab-count{
+    position:absolute;top:-6px;right:-6px;
+    background:var(--brick);color:var(--cream);
+    font-family:'Crimson Pro',serif;font-size:.72rem;font-weight:600;
+    min-width:20px;height:20px;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;padding:0 4px;
+    border:2px solid var(--dark);
+  }
+  .cart-fab.bump{animation:fabBounce .3s ease}
+
+  /* CART OVERLAY + PANEL */
+  .cart-overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:90;
+    opacity:0;pointer-events:none;transition:opacity .3s;
+  }
+  .cart-overlay.open{opacity:1;pointer-events:auto}
+  @keyframes cartUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .cart-panel{
+    position:fixed;bottom:0;left:0;right:0;z-index:91;
+    background:var(--panel);border-top:1px solid var(--border);
+    max-height:80vh;display:flex;flex-direction:column;
+    transform:translateY(100%);transition:transform .35s cubic-bezier(.22,1,.36,1);
+  }
+  .cart-panel.open{transform:translateY(0)}
+  .cart-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 20px;border-bottom:1px solid var(--border);flex-shrink:0;
+  }
+  .cart-head-title{font-family:'Playfair Display',serif;font-size:1.2rem;font-style:italic;color:var(--cream)}
+  .cart-head-close{background:none;border:none;color:rgba(240,224,200,.4);font-size:1.3rem;cursor:pointer;padding:4px;line-height:1}
+  .cart-head-close:hover{color:var(--cream)}
+  .cart-body{overflow-y:auto;flex:1;padding:8px 0}
+  .cart-empty{text-align:center;padding:40px;color:rgba(240,224,200,.25);font-style:italic;font-size:.9rem}
+  .cart-row{
+    display:flex;align-items:center;gap:12px;
+    padding:10px 20px;border-bottom:1px solid rgba(160,56,32,.1);
+  }
+  .cart-row-name{flex:1;font-family:'Playfair Display',serif;font-size:.9rem;color:var(--cream)}
+  .cart-row-price{color:var(--brick-lite);font-family:'Playfair Display',serif;font-size:.9rem;white-space:nowrap;min-width:56px;text-align:right}
+  .cart-qty{display:flex;align-items:center;gap:0;flex-shrink:0}
+  .cart-qty-btn{
+    width:26px;height:26px;background:rgba(160,56,32,.2);border:1px solid var(--border);
+    color:rgba(240,224,200,.6);font-size:1rem;line-height:1;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;transition:all .15s;
+  }
+  .cart-qty-btn:hover{background:rgba(160,56,32,.5);color:var(--cream)}
+  .cart-qty-val{
+    width:28px;text-align:center;font-family:'Crimson Pro',serif;
+    font-size:.9rem;color:var(--cream);background:rgba(20,12,8,.5);
+    border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+    height:26px;display:flex;align-items:center;justify-content:center;
+  }
+  .cart-foot{
+    padding:16px 20px;border-top:1px solid var(--border);flex-shrink:0;
+    display:flex;align-items:center;gap:14px;
+  }
+  .cart-total{flex:1;font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--cream)}
+  .cart-total span{color:var(--neon)}
+  .cart-submit{
+    background:var(--neon);color:var(--dark);border:none;
+    font-family:'Crimson Pro',serif;font-size:.82rem;font-weight:600;
+    letter-spacing:2px;text-transform:uppercase;
+    padding:11px 22px;cursor:pointer;transition:background .15s;
+    flex-shrink:0;
+  }
+  .cart-submit:hover{background:#d4eb30}
+  .cart-submit:active{background:#c8df2a}
+
+  /* ─── MOBILE ≤600px ─── */
   @media(max-width:600px){
-    .container{padding:0 12px 60px}
+    .container{padding:0 12px 90px}
     .header{padding:40px 8px 16px}
     .neon-sign{padding:12px 18px 10px}
     .neon-sign-word{letter-spacing:5px}
     .pub-subtitle{letter-spacing:2px;font-size:.82rem}
     .header-rule{margin:14px 0 24px}
     .tabs{margin-bottom:26px}
-    .tab{min-width:72px;padding:10px 6px;font-size:.72rem;letter-spacing:1.5px;gap:5px}
+    .tab{padding:10px 12px;font-size:.72rem;letter-spacing:1.5px;gap:5px}
     .tab svg{width:13px;height:13px}
     .section-title{font-size:1.45rem}
     .section-header{margin-bottom:18px}
@@ -143,9 +240,10 @@
     .item-desc{font-size:.84rem}
     .footer{margin-top:36px}
     .footer-hint{display:none}
+    .cart-fab{bottom:20px;right:16px}
   }
   @media(max-width:380px){
-    .tab{min-width:62px;font-size:.67rem;padding:9px 4px;letter-spacing:1px}
+    .tab{font-size:.67rem;padding:9px 10px;letter-spacing:1px}
     .tab svg{display:none}
   }
 </style>
@@ -202,6 +300,30 @@
   </div>
 </div>
 
+<!-- CART FAB -->
+<button class="cart-fab" id="cartFab" onclick="toggleCart()">
+  <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"/></svg>
+  <span class="cart-fab-count" id="cartCount">0</span>
+</button>
+
+<!-- CART OVERLAY -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+
+<!-- CART PANEL -->
+<div class="cart-panel" id="cartPanel">
+  <div class="cart-head">
+    <div class="cart-head-title">Ваше замовлення</div>
+    <button class="cart-head-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-body" id="cartBody">
+    <div class="cart-empty">Додайте позиції до замовлення</div>
+  </div>
+  <div class="cart-foot">
+    <div class="cart-total">Разом: <span id="cartTotalVal">0 грн</span></div>
+    <button class="cart-submit" onclick="placeOrder()">Замовити</button>
+  </div>
+</div>
+
 <script>
 const ICONS = {
   beer:  '<svg viewBox="0 0 24 24"><path d="M5 3h11l1 4H4zm-1 5h13l-1.2 12a1 1 0 01-1 .9H6.2a1 1 0 01-1-.9zm6 2a1 1 0 00-1 1v6a1 1 0 002 0v-6a1 1 0 00-1-1zm3 0a1 1 0 00-1 1v6a1 1 0 002 0v-6a1 1 0 00-1-1zm4-2h2a2 2 0 012 2v3a2 2 0 01-2 2h-1"/></svg>',
@@ -212,6 +334,86 @@ const ICONS = {
 };
 
 const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+
+// ─── CART ────────────────────────────────────────────────
+let cart = [];
+
+function addToCart(id, name, price, unit) {
+  const ex = cart.find(i => i.id === id);
+  if (ex) { ex.qty++; } else { cart.push({ id, name, price, unit, qty: 1 }); }
+  updateCartUI();
+  // pulse the "+" button
+  const btn = document.querySelector(`.item-add[data-id="${id}"]`);
+  if (btn) { btn.classList.remove('pop'); btn.offsetHeight; btn.classList.add('pop'); }
+  // bump the FAB
+  const fab = document.getElementById('cartFab');
+  fab.classList.remove('bump'); fab.offsetHeight; fab.classList.add('bump');
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(i => i.id === id);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) cart = cart.filter(i => i.id !== id);
+  updateCartUI();
+  renderCartBody();
+}
+
+function updateCartUI() {
+  const total = cart.reduce((s, i) => s + i.qty, 0);
+  const fab = document.getElementById('cartFab');
+  document.getElementById('cartCount').textContent = total;
+  if (total > 0) { fab.classList.add('visible'); }
+  else { fab.classList.remove('visible'); closeCart(); }
+}
+
+function renderCartBody() {
+  const body = document.getElementById('cartBody');
+  const totalPrice = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  document.getElementById('cartTotalVal').textContent = totalPrice + ' грн';
+  if (!cart.length) {
+    body.innerHTML = '<div class="cart-empty">Кошик порожній</div>';
+    return;
+  }
+  body.innerHTML = cart.map(i => `
+    <div class="cart-row">
+      <div class="cart-row-name">${i.name}<br><small style="color:rgba(240,224,200,.3);font-size:.75rem;font-style:italic">${i.unit}</small></div>
+      <div class="cart-qty">
+        <button class="cart-qty-btn" onclick="changeQty('${i.id}',-1)">−</button>
+        <div class="cart-qty-val">${i.qty}</div>
+        <button class="cart-qty-btn" onclick="changeQty('${i.id}',1)">+</button>
+      </div>
+      <div class="cart-row-price">${i.price * i.qty} грн</div>
+    </div>
+  `).join('');
+}
+
+function toggleCart() {
+  const open = document.getElementById('cartPanel').classList.contains('open');
+  if (open) closeCart(); else openCart();
+}
+function openCart() {
+  renderCartBody();
+  document.getElementById('cartPanel').classList.add('open');
+  document.getElementById('cartOverlay').classList.add('open');
+}
+function closeCart() {
+  document.getElementById('cartPanel').classList.remove('open');
+  document.getElementById('cartOverlay').classList.remove('open');
+}
+function placeOrder() {
+  const items = cart.map(i => `${i.name} ×${i.qty}`).join(', ');
+  closeCart();
+  cart = [];
+  updateCartUI();
+  renderCartBody();
+  // Show confirmation toast-style
+  const el = document.createElement('div');
+  el.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#1E1008;border:1px solid var(--neon);color:var(--neon);padding:14px 24px;font-family:Crimson Pro,serif;font-size:.9rem;letter-spacing:1px;z-index:200;text-align:center;max-width:90vw;animation:headerIn .4s ease both';
+  el.textContent = '✓ Замовлення прийнято! Офіціант підійде до вас.';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
 
 async function loadMenu() {
   const res = await fetch('/api/menu');
@@ -273,16 +475,24 @@ async function loadMenu() {
 
   applyStagger();
 
-  // Touch: tap to toggle extra info
-  if (isTouch) {
-    document.getElementById('sections').addEventListener('click', e => {
+  // Clicks inside menu sections: "+" button OR tap to expand details
+  document.getElementById('sections').addEventListener('click', e => {
+    // Add-to-cart button
+    const addBtn = e.target.closest('.item-add');
+    if (addBtn) {
+      e.stopPropagation();
+      addToCart(addBtn.dataset.id, addBtn.dataset.name, Number(addBtn.dataset.price), addBtn.dataset.unit);
+      return;
+    }
+    // Touch: tap item to expand extra info
+    if (isTouch) {
       const item = e.target.closest('.menu-item');
       if (!item) return;
       const wasOpen = item.classList.contains('open');
       document.querySelectorAll('.menu-item.open').forEach(el => el.classList.remove('open'));
       if (!wasOpen) item.classList.add('open');
-    });
-  }
+    }
+  });
 }
 
 function applyStagger() {
@@ -296,10 +506,13 @@ function applyStagger() {
 function renderItem(it) {
   const badgeClass = it.badge ? `badge-${it.badge}` : '';
   const badge = it.badge && it.badgeLabel ? `<span class="badge ${badgeClass}">${it.badgeLabel}</span>` : '';
+  const nameEsc = it.name.replace(/'/g,"&#39;").replace(/"/g,'&quot;');
+  const unitEsc = it.unit.replace(/'/g,"&#39;").replace(/"/g,'&quot;');
   return `<div class="menu-item">
     <div class="item-name">${it.name}</div>
     <div class="item-price">${it.price} <small>${it.unit}</small></div>
     <div class="item-desc">${it.description}</div>
+    <button class="item-add" data-id="${it.id}" data-name="${nameEsc}" data-price="${it.price}" data-unit="${unitEsc}" title="Додати до замовлення">+</button>
     ${badge ? `<div class="item-badges">${badge}</div>` : ''}
     ${it.extra ? `<div class="item-extra">${it.extra}</div>` : ''}
   </div>`;
