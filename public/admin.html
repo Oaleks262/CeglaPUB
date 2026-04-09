@@ -149,20 +149,23 @@
       border-right:none;border-bottom:1px solid var(--border);
       display:flex;flex-wrap:nowrap;overflow-x:auto;
       -webkit-overflow-scrolling:touch;scrollbar-width:none;
-      padding:6px 8px;gap:2px;
+      padding:4px 6px;gap:0;align-items:stretch;
     }
     .sidebar::-webkit-scrollbar{display:none}
     .sidebar-section{display:none}
     .sidebar-divider{display:none}
+    /* unwrap the #sidebarCats div so its children become direct flex items */
+    #sidebarCats{display:contents}
     .sidebar-item{
       flex-shrink:0;white-space:nowrap;
       border-left:none;border-bottom:2px solid transparent;
-      padding:6px 12px;font-size:.82rem;
+      padding:8px 13px;font-size:.82rem;
     }
     .sidebar-item.active{
       border-left-color:transparent;border-bottom-color:var(--neon);
       background:rgba(232,255,71,.04);
     }
+    .sidebar-count{margin-left:6px}
 
     /* panel */
     .panel-title{font-size:1.3rem}
