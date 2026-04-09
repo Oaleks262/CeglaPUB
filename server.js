@@ -158,6 +158,11 @@ app.post('/api/admin/items/reorder', (req, res) => {
   res.json({ ok: true });
 });
 
+// Admin panel
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
 // SPA fallback
 app.get('/{*splat}', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
