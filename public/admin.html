@@ -116,6 +116,50 @@
   .toast{position:fixed;bottom:24px;right:24px;background:var(--panel);border:1px solid var(--neon);color:var(--neon);padding:12px 20px;font-size:.85rem;letter-spacing:1px;z-index:300;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none}
   .toast.show{opacity:1;transform:translateY(0)}
 
+  /* NAV DROPDOWN */
+  .nav-dropdown{position:relative;margin-left:auto}
+  .nav-toggle{
+    background:none;border:1px solid var(--border);
+    color:rgba(240,224,200,.65);font-family:'Crimson Pro',serif;
+    font-size:.78rem;letter-spacing:2px;text-transform:uppercase;
+    padding:0 14px;height:36px;cursor:pointer;
+    display:flex;align-items:center;gap:8px;
+    transition:border-color .2s,color .2s;white-space:nowrap;
+  }
+  .nav-toggle:hover,.nav-dropdown.open .nav-toggle{border-color:rgba(232,255,71,.6);color:var(--neon)}
+  .nav-toggle-icon{width:14px;height:14px;fill:currentColor;flex-shrink:0}
+  .nav-toggle-label{color:var(--neon)}
+  .nav-toggle-chevron{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;transition:transform .22s ease}
+  .nav-dropdown.open .nav-toggle-chevron{transform:rotate(180deg)}
+
+  @keyframes dropdownIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+  .nav-menu{
+    position:absolute;top:calc(100% + 6px);right:0;
+    background:var(--panel);border:1px solid var(--border);
+    min-width:195px;z-index:300;display:none;
+    box-shadow:0 8px 32px rgba(0,0,0,.5);
+  }
+  .nav-dropdown.open .nav-menu{display:block;animation:dropdownIn .2s cubic-bezier(.22,1,.36,1) both}
+  .nav-menu-btn{
+    display:flex;align-items:center;gap:10px;width:100%;
+    padding:11px 16px;background:none;border:none;border-left:2px solid transparent;
+    color:rgba(240,224,200,.5);font-family:'Crimson Pro',serif;
+    font-size:.82rem;letter-spacing:1.5px;text-transform:uppercase;
+    cursor:pointer;transition:all .2s;text-align:left;
+  }
+  .nav-menu-btn svg{width:14px;height:14px;fill:currentColor;flex-shrink:0}
+  .nav-menu-btn:hover{color:var(--cream);background:rgba(160,56,32,.12)}
+  .nav-menu-btn.active{color:var(--neon);border-left-color:var(--neon);background:rgba(232,255,71,.04)}
+  .nav-menu-divider{height:1px;background:var(--border);margin:4px 0}
+  .nav-menu-link{
+    display:flex;align-items:center;gap:10px;padding:11px 16px;
+    color:rgba(240,224,200,.3);font-family:'Crimson Pro',serif;
+    font-size:.78rem;letter-spacing:1.5px;text-transform:uppercase;
+    text-decoration:none;transition:color .2s;
+  }
+  .nav-menu-link svg{width:13px;height:13px;fill:currentColor;flex-shrink:0}
+  .nav-menu-link:hover{color:rgba(240,224,200,.7)}
+
   /* ANIMATIONS */
   @keyframes panelIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
   @keyframes modalIn{from{opacity:0;transform:translateY(22px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
@@ -134,14 +178,9 @@
     .main{padding:16px 12px;overflow-y:visible}
 
     /* topbar */
-    .topbar{padding:0 12px;gap:8px;height:48px}
-    .topbar-logo span{display:none}
-    .topbar-nav{overflow-x:auto;scrollbar-width:none;flex:1;min-width:0}
-    .topbar-nav::-webkit-scrollbar{display:none}
-    .nav-btn{padding:6px 10px;font-size:.72rem;letter-spacing:1.5px;white-space:nowrap;flex-shrink:0}
-    .topbar-actions{flex-shrink:0;margin-left:0}
-    .btn-view{padding:6px 9px;font-size:0;letter-spacing:0;border-radius:0}
-    .btn-view svg{width:16px;height:16px}
+    .topbar{padding:0 14px;gap:10px;height:48px}
+    .topbar-logo{font-size:1.2rem}
+    .topbar-logo span{letter-spacing:1px;font-size:.75rem}
 
     /* sidebar — horizontal scroll strip */
     .sidebar{
@@ -198,16 +237,32 @@
 <!-- TOP BAR -->
 <div class="topbar">
   <div class="topbar-logo">Цегла <span>АДМІН</span></div>
-  <div class="topbar-nav">
-    <button class="nav-btn active" onclick="showPanel('items',this)">Меню</button>
-    <button class="nav-btn" onclick="showPanel('categories',this)">Категорії</button>
-    <button class="nav-btn" onclick="showPanel('settings',this)">Налаштування</button>
-  </div>
-  <div class="topbar-actions">
-    <a href="/" target="_blank" class="btn-view">
-      <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.7 7.6 1 12c1.7 4.4 6 7.5 11 7.5s9.3-3.1 11-7.5c-1.7-4.4-6-7.5-11-7.5zm0 12.5a5 5 0 110-10 5 5 0 010 10zm0-8a3 3 0 100 6 3 3 0 000-6z"/></svg>
-      Переглянути меню
-    </a>
+
+  <div class="nav-dropdown" id="navDropdown">
+    <button class="nav-toggle" onclick="toggleNav()">
+      <svg class="nav-toggle-icon" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      <span class="nav-toggle-label" id="navLabel">Меню</span>
+      <svg class="nav-toggle-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="nav-menu">
+      <button class="nav-menu-btn active" id="navItem-items" onclick="navTo('items','Меню',this)">
+        <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        Меню
+      </button>
+      <button class="nav-menu-btn" id="navItem-categories" onclick="navTo('categories','Категорії',this)">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8"/><rect x="3" y="13" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/></svg>
+        Категорії
+      </button>
+      <button class="nav-menu-btn" id="navItem-settings" onclick="navTo('settings','Налаштування',this)">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        Налаштування
+      </button>
+      <div class="nav-menu-divider"></div>
+      <a href="/" target="_blank" class="nav-menu-link" onclick="closeNav()">
+        <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.7 7.6 1 12c1.7 4.4 6 7.5 11 7.5s9.3-3.1 11-7.5c-1.7-4.4-6-7.5-11-7.5zm0 12.5a5 5 0 110-10 5 5 0 010 10zm0-8a3 3 0 100 6 3 3 0 000-6z"/></svg>
+        Переглянути меню
+      </a>
+    </div>
   </div>
 </div>
 
@@ -415,7 +470,8 @@ function filterByCat(id, el) {
   el.classList.add('active');
   const title = id ? DATA.categories.find(c=>c.id===id)?.name : 'Всі позиції';
   document.getElementById('panelTitle').textContent = title;
-  showPanel('items', document.querySelector('.nav-btn'));
+  navActivate('items');
+  showPanel('items');
   renderItems();
 }
 
@@ -658,16 +714,41 @@ async function toggleCat(id, visible) {
   toast(visible ? 'Категорія видима ✓' : 'Категорія прихована');
 }
 
+// ─── NAV DROPDOWN ───────────────────────────────────────
+function toggleNav() {
+  document.getElementById('navDropdown').classList.toggle('open');
+}
+function closeNav() {
+  document.getElementById('navDropdown').classList.remove('open');
+}
+function navActivate(id) {
+  const labels = { items:'Меню', categories:'Категорії', settings:'Налаштування' };
+  document.querySelectorAll('.nav-menu-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById(`navItem-${id}`);
+  if (btn) btn.classList.add('active');
+  document.getElementById('navLabel').textContent = labels[id] || id;
+}
+function navTo(id, label, btn) {
+  document.querySelectorAll('.nav-menu-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('navLabel').textContent = label;
+  showPanel(id);
+  closeNav();
+}
+// Close dropdown on outside click
+document.addEventListener('click', e => {
+  const dd = document.getElementById('navDropdown');
+  if (dd && !dd.contains(e.target)) closeNav();
+});
+
 // ─── UI HELPERS ─────────────────────────────────────────
-function showPanel(id, btn) {
+function showPanel(id) {
   document.querySelectorAll('.panel').forEach(p=>p.style.display='none');
   const panel = document.getElementById(`panel-${id}`);
   panel.style.display = 'block';
   panel.style.animation = 'none';
   panel.offsetHeight; // force reflow to restart animation
   panel.style.animation = '';
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
 }
 
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
