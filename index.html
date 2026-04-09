@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Паб Цегла — Меню</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Crimson+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brick:#A03820; --dark:#140C08; --neon:#E8FF47;
+    --brick-mid:#7A2A14; --brick-lite:#C44828;
+    --neon-glow:rgba(232,255,71,0.55); --cream:#F0E0C8;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--dark);font-family:'Crimson Pro',serif;color:var(--cream);min-height:100vh;overflow-x:hidden}
+
+  .brick-wall{position:fixed;inset:0;z-index:0;overflow:hidden}
+  .brick-wall svg{width:100%;height:100%;opacity:.2}
+  .brick-wall::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(232,255,71,.03) 0%,transparent 60%),linear-gradient(180deg,rgba(20,12,8,.55) 0%,rgba(20,12,8,.25) 40%,rgba(20,12,8,.75) 100%)}
+
+  .neon-tube-top{position:fixed;top:0;left:0;right:0;height:3px;background:var(--neon);box-shadow:0 0 6px 2px var(--neon),0 0 22px 5px var(--neon-glow),0 0 60px 10px rgba(232,255,71,.15);z-index:10;animation:flicker 7s ease-in-out infinite}
+  @keyframes flicker{0%,100%{opacity:1}91%{opacity:1}92%{opacity:.35}93%{opacity:1}97%{opacity:1}98%{opacity:.6}99%{opacity:1}}
+
+  .container{position:relative;z-index:2;max-width:860px;margin:0 auto;padding:0 24px 80px}
+
+  .header{text-align:center;padding:54px 20px 30px}
+  .neon-sign{display:inline-block;position:relative;padding:18px 32px 14px;margin-bottom:10px}
+  .neon-sign::before,.neon-sign::after,.neon-sign .nf-h,.neon-sign .nf-b{content:'';position:absolute;background:var(--brick);box-shadow:0 0 8px 2px rgba(160,56,32,.6),0 0 20px 4px rgba(160,56,32,.25)}
+  .neon-sign::before{top:0;left:10%;right:10%;height:2px}
+  .neon-sign::after{bottom:0;left:10%;right:10%;height:2px}
+  .neon-sign .nf-h{left:0;top:10%;bottom:10%;width:2px}
+  .neon-sign .nf-b{right:0;top:10%;bottom:10%;width:2px}
+  .neon-sign-text{font-family:'Playfair Display',serif;font-size:clamp(3rem,10vw,5.8rem);font-weight:900;font-style:italic;color:var(--neon);text-shadow:0 0 7px var(--neon),0 0 20px var(--neon),0 0 50px var(--neon-glow),0 0 100px rgba(232,255,71,.12);letter-spacing:-1px;line-height:1;animation:flicker 7s ease-in-out infinite}
+  .neon-sign-word{display:block;font-size:clamp(1rem,3vw,1.5rem);font-weight:600;font-style:normal;color:rgba(240,224,200,.35);letter-spacing:10px;text-transform:uppercase;margin-top:4px}
+  .pub-subtitle{font-style:italic;color:rgba(240,224,200,.3);font-size:.88rem;letter-spacing:4px;margin-top:18px}
+  .header-rule{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--brick-mid),var(--neon),var(--brick-mid),transparent);margin:20px 0 34px;opacity:.5}
+
+  .tabs{display:flex;flex-wrap:wrap;margin-bottom:40px;border:1px solid rgba(160,56,32,.35)}
+  .tab{flex:1;min-width:90px;background:none;border:none;border-right:1px solid rgba(160,56,32,.35);color:rgba(240,224,200,.4);font-family:'Crimson Pro',serif;font-size:.78rem;letter-spacing:2px;text-transform:uppercase;padding:12px 10px;cursor:pointer;transition:all .2s ease;display:flex;align-items:center;justify-content:center;gap:7px}
+  .tab:last-child{border-right:none}
+  .tab svg{width:15px;height:15px;fill:currentColor;flex-shrink:0;transition:all .2s ease}
+  .tab:hover{color:var(--cream);background:rgba(160,56,32,.15)}
+  .tab.active{color:var(--neon);background:rgba(232,255,71,.05);text-shadow:0 0 10px var(--neon-glow),0 0 25px rgba(232,255,71,.15);animation:flicker 7s ease-in-out infinite}
+  .tab.active svg{filter:drop-shadow(0 0 5px var(--neon))}
+
+  .menu-section{display:none}
+  .menu-section.visible{display:block;animation:reveal .4s ease forwards}
+  @keyframes reveal{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+  .section-header{display:flex;align-items:center;gap:14px;margin-bottom:26px}
+  .section-header svg{width:30px;height:30px;fill:var(--brick);flex-shrink:0;filter:drop-shadow(0 0 5px rgba(160,56,32,.5))}
+  .section-title{font-family:'Playfair Display',serif;font-size:1.75rem;font-style:italic;color:var(--cream)}
+  .section-rule{flex:1;height:1px;background:linear-gradient(90deg,rgba(160,56,32,.5),transparent)}
+  .sub-heading{font-size:.68rem;letter-spacing:4px;text-transform:uppercase;color:var(--brick-lite);margin:26px 0 8px 2px}
+  .menu-grid{display:grid;gap:2px}
+
+  .menu-item{background:rgba(20,12,8,.8);border-left:3px solid transparent;padding:15px 18px;display:grid;grid-template-columns:1fr auto;gap:3px 14px;cursor:pointer;transition:all .2s ease}
+  .menu-item:hover{border-left-color:var(--neon);background:rgba(232,255,71,.04)}
+  .item-name{font-family:'Playfair Display',serif;font-size:1.02rem;font-weight:700;color:var(--cream);grid-column:1;grid-row:1;transition:color .2s}
+  .menu-item:hover .item-name{color:var(--neon);text-shadow:0 0 10px rgba(232,255,71,.35)}
+  .item-price{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--brick-lite);grid-column:2;grid-row:1;text-align:right;white-space:nowrap;transition:color .2s}
+  .menu-item:hover .item-price{color:var(--neon);text-shadow:0 0 8px var(--neon-glow)}
+  .item-price small{font-size:.68rem;color:rgba(196,72,40,.55);font-family:'Crimson Pro',serif}
+  .item-desc{color:rgba(240,224,200,.42);font-size:.87rem;font-style:italic;grid-column:1;grid-row:2;line-height:1.4}
+  .item-badges{grid-column:1/-1;grid-row:3;display:flex;gap:5px;flex-wrap:wrap;margin-top:2px}
+  .badge{font-size:.58rem;letter-spacing:1.5px;text-transform:uppercase;padding:2px 6px;border:1px solid;font-family:'Crimson Pro',serif}
+  .badge-popular,.badge-new{border-color:var(--neon);color:var(--neon);text-shadow:0 0 6px var(--neon-glow)}
+  .badge-recommend,.badge-hot{border-color:var(--brick-lite);color:var(--brick-lite)}
+  .badge-muted{border-color:rgba(240,224,200,.2);color:rgba(240,224,200,.35)}
+  .item-extra{display:none;grid-column:1/-1;font-size:.77rem;color:rgba(232,255,71,.4);border-top:1px dashed rgba(232,255,71,.1);padding-top:7px;margin-top:5px}
+  .menu-item:hover .item-extra{display:block}
+
+  .footer{text-align:center;margin-top:54px;padding-top:22px;border-top:1px solid rgba(160,56,32,.2)}
+  .footer p{color:rgba(240,224,200,.22);font-size:.8rem;font-style:italic;margin:3px 0}
+  .footer-hint{margin-top:12px;font-size:.68rem;color:rgba(232,255,71,.18);letter-spacing:2px;text-transform:uppercase}
+
+  .loading{text-align:center;padding:60px;color:rgba(232,255,71,.4);font-style:italic;letter-spacing:2px}
+</style>
+</head>
+<body>
+
+<div class="brick-wall">
+  <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <pattern id="bricks" x="0" y="0" width="128" height="54" patternUnits="userSpaceOnUse">
+        <rect x="1"   y="1"  width="60" height="24" rx="1.5" fill="#8B2E18"/>
+        <rect x="65"  y="1"  width="62" height="24" rx="1.5" fill="#952E1A"/>
+        <rect x="2"   y="2"  width="58" height="3"  rx="1"   fill="rgba(255,180,120,0.06)"/>
+        <rect x="66"  y="2"  width="60" height="3"  rx="1"   fill="rgba(255,180,120,0.06)"/>
+        <rect x="1"   y="22" width="60" height="3"  fill="rgba(0,0,0,0.2)"/>
+        <rect x="65"  y="22" width="62" height="3"  fill="rgba(0,0,0,0.2)"/>
+        <rect x="-31" y="29" width="60" height="24" rx="1.5" fill="#A03820"/>
+        <rect x="33"  y="29" width="60" height="24" rx="1.5" fill="#8B2E18"/>
+        <rect x="97"  y="29" width="60" height="24" rx="1.5" fill="#952E1A"/>
+        <rect x="-30" y="30" width="58" height="3"  rx="1"   fill="rgba(255,180,120,0.06)"/>
+        <rect x="34"  y="30" width="58" height="3"  rx="1"   fill="rgba(255,180,120,0.06)"/>
+        <rect x="-31" y="50" width="60" height="3"  fill="rgba(0,0,0,0.2)"/>
+        <rect x="33"  y="50" width="60" height="3"  fill="rgba(0,0,0,0.2)"/>
+        <rect x="0"   y="25" width="128" height="4" fill="#3A1A0A" opacity="0.9"/>
+        <rect x="62"  y="1"  width="3" height="24"  fill="#3A1A0A" opacity="0.9"/>
+        <rect x="30"  y="29" width="3" height="24"  fill="#3A1A0A" opacity="0.9"/>
+        <rect x="94"  y="29" width="3" height="24"  fill="#3A1A0A" opacity="0.9"/>
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#bricks)"/>
+  </svg>
+</div>
+
+<div class="neon-tube-top"></div>
+
+<div class="container">
+  <div class="header">
+    <div class="neon-sign">
+      <span class="nf-h"></span><span class="nf-b"></span>
+      <div class="neon-sign-text" id="pubName">Цегла</div>
+      <div class="neon-sign-word" id="pubSubtitle">Паб</div>
+    </div>
+    <p class="pub-subtitle" id="pubAddress">з 1998 · вул. Ковальська, 7</p>
+    <div class="header-rule"></div>
+  </div>
+
+  <div class="tabs" id="tabs"><div class="loading">завантаження меню…</div></div>
+  <div id="sections"></div>
+
+  <div class="footer">
+    <p id="footerNote">Всі ціни вказані в гривнях, включно з ПДВ</p>
+    <p id="footerCharges"></p>
+    <p class="footer-hint">наведи на позицію — дізнайся більше</p>
+  </div>
+</div>
+
+<script>
+const ICONS = {
+  beer:  '<svg viewBox="0 0 24 24"><path d="M5 3h11l1 4H4zm-1 5h13l-1.2 12a1 1 0 01-1 .9H6.2a1 1 0 01-1-.9zm6 2a1 1 0 00-1 1v6a1 1 0 002 0v-6a1 1 0 00-1-1zm3 0a1 1 0 00-1 1v6a1 1 0 002 0v-6a1 1 0 00-1-1zm4-2h2a2 2 0 012 2v3a2 2 0 01-2 2h-1"/></svg>',
+  fork:  '<svg viewBox="0 0 24 24"><path d="M18 3a3 3 0 00-3 3v6c0 1.1.9 2 2 2v7h2v-7a2 2 0 002-2V6a3 3 0 00-3-3zM7 3v7H5V3H3v7a4 4 0 003 3.87V21h2v-7.13A4 4 0 0011 10V3H7z"/></svg>',
+  fire:  '<svg viewBox="0 0 24 24"><path d="M12 2C9.5 5.5 7 8 7 12a5 5 0 0010 0c0-2-1-3-2-4.5-.8 1.5-1.2 2.5-1.2 3.5a2 2 0 01-4 0c0-2 1-4 2.2-9z"/></svg>',
+  shot:  '<svg viewBox="0 0 24 24"><path d="M6 3l1.5 12A2 2 0 009.5 17h5a2 2 0 002-1.88L18 3H6zm4.5 3h3l-.5 4h-2z"/></svg>',
+  leaf:  '<svg viewBox="0 0 24 24"><path d="M12 3C9 5 7 8.5 8 12.5a4 4 0 008 0c.5-2-.5-3.5-1.5-5-.5 1.5-.5 2.5-.5 3a2 2 0 01-4 0c0-2.5 1-4.5 2-7.5z"/></svg>',
+};
+
+async function loadMenu() {
+  const res = await fetch('/api/menu');
+  const { categories, subcategories, items, settings } = await res.json();
+
+  // Header
+  document.getElementById('pubName').textContent = settings.pubName || 'Цегла';
+  document.getElementById('pubSubtitle').textContent = settings.pubSubtitle || 'Паб';
+  document.getElementById('pubAddress').textContent = `з ${settings.since} · ${settings.address}`;
+  document.getElementById('footerNote').textContent = settings.footerNote;
+  document.getElementById('footerCharges').textContent =
+    `Обслуговування: ${settings.serviceCharge}% при столику · Знижка на ДН: ${settings.birthdayDiscount}%`;
+
+  // Tabs
+  const tabsEl = document.getElementById('tabs');
+  tabsEl.innerHTML = categories.map((cat, i) => `
+    <button class="tab ${i===0?'active':''}" onclick="show('${cat.id}',this)">
+      ${ICONS[cat.icon]||ICONS.beer} ${cat.name}
+    </button>
+  `).join('');
+
+  // Sections
+  const sectionsEl = document.getElementById('sections');
+  sectionsEl.innerHTML = categories.map((cat, i) => {
+    const catItems = items.filter(it => it.categoryId === cat.id);
+    const catSubs  = subcategories.filter(s => s.categoryId === cat.id);
+
+    let html = `<div id="${cat.id}" class="menu-section ${i===0?'visible':''}">
+      <div class="section-header">
+        ${ICONS[cat.icon]||ICONS.beer}
+        <div class="section-title">${cat.name}</div>
+        <div class="section-rule"></div>
+      </div>`;
+
+    if (catSubs.length) {
+      catSubs.forEach(sub => {
+        const subItems = catItems.filter(it => it.subcategoryId === sub.id);
+        if (!subItems.length) return;
+        html += `<div class="sub-heading">${sub.name}</div><div class="menu-grid">`;
+        subItems.forEach(it => { html += renderItem(it); });
+        html += '</div>';
+      });
+      // Позиції без підкатегорії
+      const noSub = catItems.filter(it => !it.subcategoryId);
+      if (noSub.length) {
+        html += '<div class="menu-grid">';
+        noSub.forEach(it => { html += renderItem(it); });
+        html += '</div>';
+      }
+    } else {
+      html += '<div class="menu-grid">';
+      catItems.forEach(it => { html += renderItem(it); });
+      html += '</div>';
+    }
+    html += '</div>';
+    return html;
+  }).join('');
+}
+
+function renderItem(it) {
+  const badgeClass = it.badge ? `badge-${it.badge}` : '';
+  const badge = it.badge && it.badgeLabel ? `<span class="badge ${badgeClass}">${it.badgeLabel}</span>` : '';
+  return `<div class="menu-item">
+    <div class="item-name">${it.name}</div>
+    <div class="item-price">${it.price} <small>${it.unit}</small></div>
+    <div class="item-desc">${it.description}</div>
+    ${badge ? `<div class="item-badges">${badge}</div>` : ''}
+    ${it.extra ? `<div class="item-extra">${it.extra}</div>` : ''}
+  </div>`;
+}
+
+function show(id, btn) {
+  document.querySelectorAll('.menu-section').forEach(s => s.classList.remove('visible'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('visible');
+  btn.classList.add('active');
+}
+
+loadMenu();
+</script>
+</body>
+</html>

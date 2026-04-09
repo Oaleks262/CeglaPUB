@@ -1,0 +1,1709 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Корсети Ручної Роботи — Львів</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #080808;
+    --white: #F8F5F0;
+    --gold: #B8965A;
+    --gold-light: #D4B483;
+    --gold-dim: rgba(184,150,90,0.15);
+    --gray: #9A9187;
+    --gray-light: #E8E4DF;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Jost', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--sans);
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: width .2s, height .2s, background .2s;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(184,150,90,0.5);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: all .12s ease;
+  }
+  body:has(a:hover) .cursor,
+  body:has(button:hover) .cursor { width: 14px; height: 14px; }
+  body:has(a:hover) .cursor-ring,
+  body:has(button:hover) .cursor-ring { width: 50px; height: 50px; border-color: var(--gold); }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.035;
+    pointer-events: none;
+    z-index: 9000;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 48px;
+    transition: padding .4s, background .4s, backdrop-filter .4s;
+  }
+  nav.scrolled {
+    padding: 18px 48px;
+    background: rgba(8,8,8,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(184,150,90,0.12);
+  }
+  .nav-logo {
+    font-family: var(--serif);
+    font-size: 1.25rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: var(--white);
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+  }
+  .nav-logo span {
+    font-size: 0.6rem;
+    font-family: var(--sans);
+    font-weight: 300;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(248,245,240,0.65);
+    text-decoration: none;
+    transition: color .3s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 0; height: 1px;
+    background: var(--gold);
+    transition: width .3s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--gold);
+    border: none;
+    padding: 12px 28px;
+    cursor: none;
+    transition: background .3s, transform .2s;
+  }
+  .nav-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+  /* Burger */
+  .burger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: none;
+    background: none;
+    border: none;
+    padding: 4px;
+  }
+  .burger span {
+    display: block;
+    width: 26px; height: 1px;
+    background: var(--white);
+    transition: all .3s;
+  }
+  .burger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  .burger.open span:nth-child(2) { opacity: 0; }
+  .burger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+  /* Mobile menu */
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    background: var(--black);
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .4s;
+  }
+  .mobile-menu.open { opacity: 1; pointer-events: all; }
+  .mobile-menu a {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 8vw, 3.5rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--white);
+    text-decoration: none;
+    transition: color .3s;
+  }
+  .mobile-menu a:hover { color: var(--gold); }
+
+  /* ─── HERO ─── */
+  #hero {
+    position: relative;
+    height: 100svh;
+    min-height: 600px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+  }
+
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: clamp(80px, 10vw, 120px) clamp(32px, 6vw, 80px) clamp(60px, 8vw, 100px);
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-tag {
+    font-size: 0.65rem;
+    font-weight: 400;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    opacity: 0;
+    animation: fadeUp .8s .2s forwards;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 32px; height: 1px;
+    background: var(--gold);
+  }
+
+  .hero-h1 {
+    font-family: var(--serif);
+    font-size: clamp(2.8rem, 5.5vw, 5.2rem);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp .9s .4s forwards;
+  }
+  .hero-h1 em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  .hero-desc {
+    font-size: clamp(0.8rem, 1.2vw, 0.92rem);
+    font-weight: 300;
+    line-height: 1.8;
+    color: rgba(248,245,240,0.6);
+    max-width: 380px;
+    margin-bottom: 52px;
+    opacity: 0;
+    animation: fadeUp .9s .6s forwards;
+  }
+
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    opacity: 0;
+    animation: fadeUp .9s .8s forwards;
+  }
+
+  .btn-primary {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--gold);
+    border: none;
+    padding: 16px 36px;
+    cursor: none;
+    transition: background .3s, transform .2s, box-shadow .3s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-primary:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(184,150,90,0.25);
+  }
+
+  .btn-ghost {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(248,245,240,0.65);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: color .3s;
+    cursor: none;
+  }
+  .btn-ghost::after {
+    content: '↗';
+    font-size: 0.9rem;
+    transition: transform .3s;
+  }
+  .btn-ghost:hover { color: var(--white); }
+  .btn-ghost:hover::after { transform: translate(3px, -3px); }
+
+  .hero-right {
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeIn 1.2s .3s forwards;
+  }
+
+  .hero-img-wrap {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #1a1410 0%, #0d0b09 100%);
+  }
+
+  /* Decorative corset silhouette */
+  .corset-art {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .corset-art svg {
+    width: 60%;
+    max-width: 280px;
+    opacity: 0.08;
+  }
+
+  /* Ornamental lines on hero-right */
+  .hero-right::before {
+    content: '';
+    position: absolute;
+    top: 15%; left: 10%;
+    width: 1px;
+    height: 60%;
+    background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+    opacity: 0.3;
+    z-index: 2;
+  }
+
+  .hero-counter {
+    position: absolute;
+    bottom: 48px;
+    left: 40px;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .counter-item {
+    display: flex;
+    flex-direction: column;
+  }
+  .counter-num {
+    font-family: var(--serif);
+    font-size: 2.4rem;
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1;
+  }
+  .counter-label {
+    font-size: 0.6rem;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .scroll-line {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: rgba(248,245,240,0.35);
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    padding-bottom: 28px;
+    z-index: 10;
+    animation: fadeUp 1s 1.2s both;
+  }
+  .scroll-line::before {
+    content: '';
+    width: 1px;
+    height: 50px;
+    background: linear-gradient(to bottom, transparent, rgba(184,150,90,0.5));
+    animation: scrollPulse 2s infinite;
+  }
+
+  /* ─── SECTION BASE ─── */
+  section {
+    padding: clamp(80px, 12vw, 140px) clamp(24px, 6vw, 80px);
+    position: relative;
+  }
+
+  .section-tag {
+    font-size: 0.62rem;
+    font-weight: 400;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .section-tag::before {
+    content: '';
+    width: 28px; height: 1px;
+    background: var(--gold);
+  }
+
+  .section-title {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 3.8rem);
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+  .section-title em { font-style: italic; color: var(--gold-light); }
+
+  .section-sub {
+    font-size: 0.88rem;
+    font-weight: 300;
+    color: rgba(248,245,240,0.55);
+    line-height: 1.8;
+    max-width: 480px;
+    margin-bottom: 60px;
+  }
+
+  /* ─── ABOUT ─── */
+  #about {
+    background: var(--white);
+    color: var(--black);
+  }
+  #about .section-tag { color: var(--gold); }
+  #about .section-tag::before { background: var(--gold); }
+  #about .section-title { color: var(--black); }
+  #about .section-sub { color: rgba(8,8,8,0.55); }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .about-img-block {
+    position: relative;
+    aspect-ratio: 3/4;
+    background: #E8E4DF;
+    overflow: hidden;
+  }
+  .about-img-block::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    right: -20px;
+    width: 80%;
+    height: 80%;
+    border: 1px solid var(--gold);
+    z-index: -1;
+  }
+
+  .about-img-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #E0D8CF 0%, #C8BFB5 100%);
+  }
+  .about-img-placeholder svg {
+    width: 40%;
+    opacity: 0.2;
+  }
+
+  .about-text { display: flex; flex-direction: column; gap: 28px; }
+
+  .about-quote {
+    font-family: var(--serif);
+    font-size: clamp(1.3rem, 2.2vw, 1.9rem);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.45;
+    color: var(--black);
+    border-left: 2px solid var(--gold);
+    padding-left: 28px;
+    margin: 8px 0 16px;
+  }
+
+  .about-p {
+    font-size: 0.88rem;
+    line-height: 1.9;
+    color: rgba(8,8,8,0.65);
+  }
+
+  .about-stats {
+    display: flex;
+    gap: 48px;
+    margin-top: 16px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(8,8,8,0.1);
+  }
+  .stat { display: flex; flex-direction: column; gap: 4px; }
+  .stat-num {
+    font-family: var(--serif);
+    font-size: 2.8rem;
+    font-weight: 300;
+    line-height: 1;
+    color: var(--black);
+  }
+  .stat-label {
+    font-size: 0.6rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  /* ─── PORTFOLIO ─── */
+  #portfolio { background: #0D0B08; }
+
+  .portfolio-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 56px;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .portfolio-filters {
+    display: flex;
+    gap: 4px;
+  }
+  .filter-btn {
+    font-family: var(--sans);
+    font-size: 0.65rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(248,245,240,0.45);
+    background: none;
+    border: 1px solid rgba(248,245,240,0.1);
+    padding: 9px 20px;
+    cursor: none;
+    transition: all .3s;
+  }
+  .filter-btn:hover,
+  .filter-btn.active {
+    color: var(--black);
+    background: var(--gold);
+    border-color: var(--gold);
+  }
+
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  .portfolio-grid .item:nth-child(1) { grid-row: span 2; }
+  .portfolio-grid .item:nth-child(4) { grid-column: span 2; }
+
+  .portfolio-item {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 3/4;
+    background: #1A1610;
+    cursor: none;
+  }
+  .portfolio-grid .item:nth-child(1) .portfolio-item { aspect-ratio: unset; height: 100%; }
+  .portfolio-grid .item:nth-child(4) .portfolio-item { aspect-ratio: 16/9; }
+
+  .portfolio-item-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #1e1a14 0%, #120f0a 100%);
+    transition: transform .6s cubic-bezier(.25,.46,.45,.94);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .portfolio-item:hover .portfolio-item-bg { transform: scale(1.05); }
+
+  .portfolio-item-bg svg {
+    width: 35%;
+    opacity: 0.06;
+  }
+
+  .portfolio-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(8,8,8,0.9) 0%, transparent 60%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 28px;
+    opacity: 0;
+    transition: opacity .4s;
+  }
+  .portfolio-item:hover .portfolio-overlay { opacity: 1; }
+
+  .portfolio-cat {
+    font-size: 0.58rem;
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  .portfolio-name {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    font-weight: 300;
+    font-style: italic;
+  }
+
+  .portfolio-num {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-family: var(--serif);
+    font-size: 0.75rem;
+    font-weight: 300;
+    color: rgba(184,150,90,0.4);
+    letter-spacing: 0.1em;
+  }
+
+  /* ─── PROCESS ─── */
+  #process {
+    background: var(--black);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+    align-items: start;
+  }
+
+  .process-steps { display: flex; flex-direction: column; gap: 0; }
+
+  .process-step {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 24px;
+    padding: 32px 0;
+    border-bottom: 1px solid rgba(248,245,240,0.06);
+    position: relative;
+    cursor: none;
+    transition: background .3s;
+  }
+  .process-step:first-child { border-top: 1px solid rgba(248,245,240,0.06); }
+
+  .step-num {
+    font-family: var(--serif);
+    font-size: 0.7rem;
+    font-weight: 300;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    padding-top: 4px;
+  }
+
+  .step-content {}
+  .step-title {
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin-bottom: 10px;
+    transition: color .3s;
+  }
+  .process-step:hover .step-title { color: var(--gold-light); }
+
+  .step-desc {
+    font-size: 0.82rem;
+    line-height: 1.75;
+    color: rgba(248,245,240,0.45);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .4s, opacity .4s;
+    opacity: 0;
+  }
+  .process-step:hover .step-desc {
+    max-height: 100px;
+    opacity: 1;
+  }
+
+  .process-visual {
+    position: sticky;
+    top: 120px;
+  }
+
+  .process-card {
+    background: #100E0A;
+    border: 1px solid rgba(184,150,90,0.15);
+    padding: 48px 40px;
+    position: relative;
+  }
+  .process-card::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 40px;
+    width: 60px; height: 2px;
+    background: var(--gold);
+  }
+
+  .process-card-label {
+    font-size: 0.58rem;
+    font-weight: 400;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+  .process-card-title {
+    font-family: var(--serif);
+    font-size: 1.6rem;
+    font-weight: 300;
+    font-style: italic;
+    margin-bottom: 24px;
+    line-height: 1.3;
+  }
+  .process-card-text {
+    font-size: 0.82rem;
+    line-height: 1.85;
+    color: rgba(248,245,240,0.5);
+    margin-bottom: 36px;
+  }
+  .process-detail {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 28px;
+    border-top: 1px solid rgba(248,245,240,0.08);
+  }
+  .detail-item { display: flex; flex-direction: column; gap: 4px; }
+  .detail-val {
+    font-family: var(--serif);
+    font-size: 1.6rem;
+    font-weight: 300;
+  }
+  .detail-key {
+    font-size: 0.6rem;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray);
+  }
+
+  /* ─── TESTIMONIALS ─── */
+  #testimonials { background: #F5F1EB; color: var(--black); }
+  #testimonials .section-tag { color: var(--gold); }
+  #testimonials .section-tag::before { background: var(--gold); }
+  #testimonials .section-title { color: var(--black); }
+
+  .testimonials-track {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .testimonial-card {
+    background: var(--white);
+    padding: 44px 36px;
+    position: relative;
+    border-bottom: 2px solid transparent;
+    transition: border-color .3s;
+    cursor: none;
+  }
+  .testimonial-card:hover { border-bottom-color: var(--gold); }
+
+  .testimonial-card::before {
+    content: '\201C';
+    font-family: var(--serif);
+    font-size: 6rem;
+    line-height: 1;
+    color: rgba(184,150,90,0.12);
+    position: absolute;
+    top: 16px; left: 28px;
+    font-style: italic;
+  }
+
+  .stars {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+  }
+  .star {
+    width: 10px; height: 10px;
+    background: var(--gold);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  }
+
+  .testimonial-text {
+    font-family: var(--serif);
+    font-size: 1.05rem;
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.7;
+    color: rgba(8,8,8,0.75);
+    margin-bottom: 28px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .author-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #D4B483, #B8965A);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    color: var(--black);
+  }
+  .author-name {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--black);
+  }
+  .author-city {
+    font-size: 0.65rem;
+    font-weight: 300;
+    color: rgba(8,8,8,0.45);
+    letter-spacing: 0.1em;
+  }
+
+  /* ─── CTA FORM ─── */
+  #contact {
+    background: var(--black);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .contact-deco {
+    position: relative;
+  }
+
+  .contact-ornament {
+    font-family: var(--serif);
+    font-size: clamp(5rem, 12vw, 10rem);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 0.9;
+    color: rgba(184,150,90,0.06);
+    letter-spacing: -0.03em;
+    user-select: none;
+    margin-bottom: 40px;
+  }
+
+  .contact-info { display: flex; flex-direction: column; gap: 24px; }
+  .contact-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  .contact-icon {
+    width: 40px; height: 40px;
+    border: 1px solid rgba(184,150,90,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .contact-row-label {
+    font-size: 0.6rem;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 4px;
+  }
+  .contact-row-val {
+    font-size: 0.9rem;
+    color: var(--white);
+  }
+
+  .contact-form { display: flex; flex-direction: column; gap: 4px; }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid rgba(248,245,240,0.12);
+    margin-bottom: 8px;
+    transition: border-color .3s;
+  }
+  .form-group:focus-within { border-color: var(--gold); }
+
+  .form-label {
+    font-size: 0.6rem;
+    font-weight: 300;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gray);
+    padding: 16px 0 6px;
+    transition: color .3s;
+  }
+  .form-group:focus-within .form-label { color: var(--gold); }
+
+  .form-input, .form-select, .form-textarea {
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--white);
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    font-weight: 300;
+    padding: 0 0 14px;
+    width: 100%;
+    cursor: none;
+  }
+  .form-textarea { resize: none; height: 80px; }
+  .form-select option { background: var(--black); }
+
+  .form-submit {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--gold);
+    border: none;
+    padding: 18px 40px;
+    margin-top: 20px;
+    cursor: none;
+    transition: background .3s, transform .2s;
+    align-self: flex-start;
+  }
+  .form-submit:hover { background: var(--gold-light); transform: translateY(-2px); }
+
+  .form-success {
+    display: none;
+    text-align: center;
+    padding: 40px;
+  }
+  .form-success.show { display: block; }
+  .form-success-icon {
+    font-family: var(--serif);
+    font-size: 3rem;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+  .form-success-title {
+    font-family: var(--serif);
+    font-size: 1.8rem;
+    font-weight: 300;
+    font-style: italic;
+    margin-bottom: 12px;
+  }
+  .form-success-text {
+    font-size: 0.82rem;
+    color: rgba(248,245,240,0.5);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: #050403;
+    padding: 60px clamp(24px, 6vw, 80px) 40px;
+    border-top: 1px solid rgba(184,150,90,0.1);
+  }
+
+  .footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+    gap: 40px;
+  }
+
+  .footer-logo {
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+  .footer-tagline {
+    font-size: 0.65rem;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray);
+  }
+
+  .footer-nav-group { display: flex; flex-direction: column; gap: 16px; }
+  .footer-nav-title {
+    font-size: 0.6rem;
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .footer-link {
+    font-size: 0.82rem;
+    font-weight: 300;
+    color: rgba(248,245,240,0.45);
+    text-decoration: none;
+    transition: color .3s;
+    cursor: none;
+  }
+  .footer-link:hover { color: var(--white); }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 28px;
+    border-top: 1px solid rgba(248,245,240,0.06);
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .footer-copy {
+    font-size: 0.68rem;
+    font-weight: 300;
+    color: rgba(248,245,240,0.25);
+    letter-spacing: 0.05em;
+  }
+  .footer-socials { display: flex; gap: 16px; }
+  .social-link {
+    width: 34px; height: 34px;
+    border: 1px solid rgba(248,245,240,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(248,245,240,0.4);
+    font-size: 0.75rem;
+    text-decoration: none;
+    transition: all .3s;
+    cursor: none;
+  }
+  .social-link:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    transform: translateY(-2px);
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 0.8; transform: scaleY(0.7); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(36px);
+    transition: opacity .7s, transform .7s;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+  .reveal-delay-1 { transition-delay: .1s; }
+  .reveal-delay-2 { transition-delay: .2s; }
+  .reveal-delay-3 { transition-delay: .3s; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 1024px) {
+    #hero { grid-template-columns: 1fr; }
+    .hero-right {
+      position: absolute;
+      inset: 0;
+      opacity: 0.15 !important;
+      animation: none !important;
+    }
+    .hero-left { padding: 100px 40px 80px; z-index: 3; }
+    .about-grid { grid-template-columns: 1fr; gap: 48px; }
+    .about-img-block { aspect-ratio: 4/3; }
+    #process {
+      grid-template-columns: 1fr;
+      gap: 60px;
+    }
+    .process-visual { position: relative; top: 0; }
+    #contact { grid-template-columns: 1fr; }
+    .contact-ornament { font-size: 5rem; margin-bottom: 24px; }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    nav.scrolled { padding: 16px 24px; }
+    .nav-links, .nav-cta { display: none; }
+    .burger { display: flex; }
+
+    .hero-left { padding: 90px 24px 72px; }
+    .hero-counter { display: none; }
+    .hero-actions { flex-direction: column; align-items: flex-start; gap: 20px; }
+
+    section { padding: 72px 24px; }
+
+    .portfolio-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .portfolio-grid .item:nth-child(1) { grid-row: unset; }
+    .portfolio-grid .item:nth-child(4) { grid-column: unset; }
+    .portfolio-item { aspect-ratio: 3/4; }
+    .portfolio-grid .item:nth-child(4) .portfolio-item { aspect-ratio: 3/4; }
+
+    .testimonials-track { grid-template-columns: 1fr; }
+
+    .portfolio-header { flex-direction: column; align-items: flex-start; }
+    .portfolio-filters { flex-wrap: wrap; }
+
+    .about-stats { gap: 28px; }
+
+    .footer-top { flex-direction: column; }
+    .footer-bottom { flex-direction: column; align-items: flex-start; }
+
+    .process-step { grid-template-columns: 48px 1fr; }
+  }
+
+  @media (max-width: 480px) {
+    .portfolio-grid { grid-template-columns: 1fr; }
+    .about-stats { flex-wrap: wrap; }
+    .hero-h1 { font-size: 2.4rem; }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: rgba(184,150,90,0.4); }
+
+  /* Selection */
+  ::selection { background: rgba(184,150,90,0.25); color: var(--white); }
+</style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">
+    Корсет Майстер
+    <span>Lviv · Handmade</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">Про мене</a></li>
+    <li><a href="#portfolio">Портфоліо</a></li>
+    <li><a href="#process">Процес</a></li>
+    <li><a href="#contact">Контакти</a></li>
+  </ul>
+  <button class="nav-cta" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Замовити</button>
+  <button class="burger" id="burger" aria-label="Меню">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about" class="mobile-nav-link">Про мене</a>
+  <a href="#portfolio" class="mobile-nav-link">Портфоліо</a>
+  <a href="#process" class="mobile-nav-link">Процес</a>
+  <a href="#testimonials" class="mobile-nav-link">Відгуки</a>
+  <a href="#contact" class="mobile-nav-link">Контакти</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-tag">Ручна робота · Львів</div>
+    <h1 class="hero-h1">
+      Корсети,<br>
+      що <em>створені</em><br>
+      для вас
+    </h1>
+    <p class="hero-desc">
+      Кожен виріб — унікальна історія. Індивідуальний пошив 
+      з преміум матеріалів під вашу фігуру та характер.
+    </p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-primary">Замовити корсет</a>
+      <a href="#portfolio" class="btn-ghost">Переглянути роботи</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-img-wrap">
+      <div class="corset-art">
+        <!-- Corset SVG silhouette -->
+        <svg viewBox="0 0 200 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M100 20 C60 20, 30 50, 25 90 L20 160 C20 180, 30 200, 50 210 L70 220 L70 280 L100 280 L100 220 L130 220 L150 210 C170 200, 180 180, 180 160 L175 90 C170 50, 140 20, 100 20Z" stroke="#B8965A" stroke-width="1.5" fill="none" opacity="0.6"/>
+          <path d="M100 20 L100 280" stroke="#B8965A" stroke-width="0.5" opacity="0.3"/>
+          <path d="M60 40 C55 70, 50 100, 48 130" stroke="#B8965A" stroke-width="0.5" opacity="0.25"/>
+          <path d="M140 40 C145 70, 150 100, 152 130" stroke="#B8965A" stroke-width="0.5" opacity="0.25"/>
+          <path d="M25 90 L175 90" stroke="#B8965A" stroke-width="0.5" opacity="0.2"/>
+          <path d="M22 130 L178 130" stroke="#B8965A" stroke-width="0.5" opacity="0.2"/>
+          <path d="M20 160 L180 160" stroke="#B8965A" stroke-width="0.5" opacity="0.2"/>
+          <circle cx="100" cy="20" r="3" fill="#B8965A" opacity="0.5"/>
+          <circle cx="25" cy="90" r="2" fill="#B8965A" opacity="0.3"/>
+          <circle cx="175" cy="90" r="2" fill="#B8965A" opacity="0.3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="hero-counter">
+      <div class="counter-item">
+        <span class="counter-num">8+</span>
+        <span class="counter-label">Років досвіду</span>
+      </div>
+      <div class="counter-item">
+        <span class="counter-num">340</span>
+        <span class="counter-label">Виробів</span>
+      </div>
+      <div class="counter-item">
+        <span class="counter-num">98%</span>
+        <span class="counter-label">Задоволених</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-line">Гортай</div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-img-block reveal">
+      <div class="about-img-placeholder">
+        <svg viewBox="0 0 100 150" fill="none">
+          <path d="M50 10C30 10 15 25 12 45L10 80C10 90 15 100 25 105L35 110L35 140L50 140L50 110L65 110L75 105C85 100 90 90 90 80L88 45C85 25 70 10 50 10Z" stroke="#8B7355" stroke-width="1" fill="none"/>
+          <path d="M50 10 L50 140" stroke="#8B7355" stroke-width="0.5" opacity="0.4"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="about-text">
+      <div class="reveal">
+        <div class="section-tag">Про майстра</div>
+        <h2 class="section-title">Ольга Петренко — <em>майстер корсетного пошиву</em></h2>
+      </div>
+      <blockquote class="about-quote reveal reveal-delay-1">
+        «Корсет — це не просто одяг. Це скульптура для тіла, що розповідає вашу історію.»
+      </blockquote>
+      <p class="about-p reveal reveal-delay-2">
+        Понад 8 років я займаюсь пошивом корсетів у Львові. Кожен виріб — 
+        результат тісної співпраці з клієнткою: від першої консультації 
+        до фінальної примірки. Я використовую виключно преміум матеріали 
+        — шовк, атлас, мереживо — та перевірені техніки ручного пошиву.
+      </p>
+      <div class="about-stats reveal reveal-delay-3">
+        <div class="stat">
+          <span class="stat-num">340+</span>
+          <span class="stat-label">Виробів</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">8</span>
+          <span class="stat-label">Років</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">100%</span>
+          <span class="stat-label">Ручна робота</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section id="portfolio">
+  <div class="portfolio-header">
+    <div>
+      <div class="section-tag reveal">Роботи</div>
+      <h2 class="section-title reveal reveal-delay-1">Кожна робота — <em>окрема історія</em></h2>
+    </div>
+    <div class="portfolio-filters reveal reveal-delay-2">
+      <button class="filter-btn active" data-filter="all">Всі</button>
+      <button class="filter-btn" data-filter="wedding">Весільні</button>
+      <button class="filter-btn" data-filter="evening">Вечірні</button>
+      <button class="filter-btn" data-filter="casual">Casual</button>
+    </div>
+  </div>
+
+  <div class="portfolio-grid">
+    <div class="item" data-cat="wedding">
+      <div class="portfolio-item">
+        <div class="portfolio-item-bg">
+          <svg viewBox="0 0 200 300" fill="none"><path d="M100 20 C60 20, 30 50, 25 90 L20 160 C20 180, 30 200, 50 210 L70 220 L70 280 L100 280 L100 220 L130 220 L150 210 C170 200, 180 180, 180 160 L175 90 C170 50, 140 20, 100 20Z" stroke="#B8965A" stroke-width="1" fill="rgba(184,150,90,0.03)"/></svg>
+        </div>
+        <div class="portfolio-num">01</div>
+        <div class="portfolio-overlay">
+          <div class="portfolio-cat">Весільний</div>
+          <div class="portfolio-name">Класика у білому</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="item" data-cat="evening">
+      <div class="portfolio-item">
+        <div class="portfolio-item-bg" style="background: linear-gradient(135deg, #1a1016 0%, #110d14 100%)">
+          <svg viewBox="0 0 200 300" fill="none"><path d="M100 20 C60 20, 30 50, 25 90 L20 160 C20 180, 30 200, 50 210 L70 220 L70 280 L100 280 L100 220 L130 220 L150 210 C170 200, 180 180, 180 160 L175 90 C170 50, 140 20, 100 20Z" stroke="#9B7FBF" stroke-width="1" fill="rgba(155,127,191,0.04)"/></svg>
+        </div>
+        <div class="portfolio-num">02</div>
+        <div class="portfolio-overlay">
+          <div class="portfolio-cat">Вечірній</div>
+          <div class="portfolio-name">Ніч в Парижі</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="item" data-cat="casual">
+      <div class="portfolio-item">
+        <div class="portfolio-item-bg" style="background: linear-gradient(135deg, #141a14 0%, #0d1410 100%)">
+          <svg viewBox="0 0 200 300" fill="none"><path d="M100 20 C60 20, 30 50, 25 90 L20 160 C20 180, 30 200, 50 210 L70 220 L70 280 L100 280 L100 220 L130 220 L150 210 C170 200, 180 180, 180 160 L175 90 C170 50, 140 20, 100 20Z" stroke="#7A9B7A" stroke-width="1" fill="rgba(122,155,122,0.04)"/></svg>
+        </div>
+        <div class="portfolio-num">03</div>
+        <div class="portfolio-overlay">
+          <div class="portfolio-cat">Casual</div>
+          <div class="portfolio-name">Лісова відьма</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="item" data-cat="evening">
+      <div class="portfolio-item">
+        <div class="portfolio-item-bg" style="background: linear-gradient(135deg, #1a1510 0%, #120f08 100%)">
+          <svg viewBox="0 0 200 300" fill="none"><path d="M100 20 C60 20, 30 50, 25 90 L20 160 C20 180, 30 200, 50 210 L70 220 L70 280 L100 280 L100 220 L130 220 L150 210 C170 200, 180 180, 180 160 L175 90 C170 50, 140 20, 100 20Z" stroke="#D4B483" stroke-width="1.5" fill="rgba(212,180,131,0.06)"/></svg>
+        </div>
+        <div class="portfolio-num">04</div>
+        <div class="portfolio-overlay">
+          <div class="portfolio-cat">Вечірній</div>
+          <div class="portfolio-name">Золота богиня</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="item" data-cat="wedding">
+      <div class="portfolio-item">
+        <div class="portfolio-item-bg" style="background: linear-gradient(135deg, #18151a 0%, #110e13 100%)">
+          <svg viewBox="0 0 200 300" fill="none"><path d="M100 20 C60 20, 30 50, 25 90 L20 160 C20 180, 30 200, 50 210 L70 220 L70 280 L100 280 L100 220 L130 220 L150 210 C170 200, 180 180, 180 160 L175 90 C170 50, 140 20, 100 20Z" stroke="#E8C8D8" stroke-width="1" fill="rgba(232,200,216,0.04)"/></svg>
+        </div>
+        <div class="portfolio-num">05</div>
+        <div class="portfolio-overlay">
+          <div class="portfolio-cat">Весільний</div>
+          <div class="portfolio-name">Рожевий блиск</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="item" data-cat="casual">
+      <div class="portfolio-item">
+        <div class="portfolio-item-bg" style="background: linear-gradient(135deg, #1a1618 0%, #130f11 100%)">
+          <svg viewBox="0 0 200 300" fill="none"><path d="M100 20 C60 20, 30 50, 25 90 L20 160 C20 180, 30 200, 50 210 L70 220 L70 280 L100 280 L100 220 L130 220 L150 210 C170 200, 180 180, 180 160 L175 90 C170 50, 140 20, 100 20Z" stroke="#C8A0A8" stroke-width="1" fill="rgba(200,160,168,0.04)"/></svg>
+        </div>
+        <div class="portfolio-num">06</div>
+        <div class="portfolio-overlay">
+          <div class="portfolio-cat">Casual</div>
+          <div class="portfolio-name">Міська романтика</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div>
+    <div class="section-tag reveal">Як це відбувається</div>
+    <h2 class="section-title reveal reveal-delay-1">Від ідеї до <em>ідеального корсету</em></h2>
+    <p class="section-sub reveal reveal-delay-2">Кожен крок продуманий так, щоб результат перевершив ваші очікування.</p>
+
+    <div class="process-steps">
+      <div class="process-step reveal">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <div class="step-title">Консультація та ескіз</div>
+          <div class="step-desc">Обговорюємо ваш задум, стиль, привід. Я роблю ескіз та затверджую концепцію разом з вами.</div>
+        </div>
+      </div>
+      <div class="process-step reveal reveal-delay-1">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <div class="step-title">Зняття мірок</div>
+          <div class="step-desc">Особиста зустріч у Львові або онлайн-консультація з детальним гайдом по самостійному зніманню мірок.</div>
+        </div>
+      </div>
+      <div class="process-step reveal reveal-delay-2">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <div class="step-title">Підбір матеріалів</div>
+          <div class="step-desc">Разом обираємо тканину, фурнітуру та шнурівку. Тільки преміум матеріали.</div>
+        </div>
+      </div>
+      <div class="process-step reveal">
+        <div class="step-num">04</div>
+        <div class="step-content">
+          <div class="step-title">Пошив та примірки</div>
+          <div class="step-desc">Від 2 до 4 примірок залежно від складності. Кожен стібок — вручну.</div>
+        </div>
+      </div>
+      <div class="process-step reveal reveal-delay-1">
+        <div class="step-num">05</div>
+        <div class="step-content">
+          <div class="step-title">Фінальна примірка та передача</div>
+          <div class="step-desc">Ваш корсет готовий. Упаковка в фірмову коробку та доставка.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="process-visual reveal reveal-delay-2">
+    <div class="process-card">
+      <div class="process-card-label">Ваш проєкт</div>
+      <div class="process-card-title">«Кастомний весільний корсет з мереживом»</div>
+      <div class="process-card-text">
+        Унікальний виріб, створений спеціально для вашого образу. 
+        Шовк + французьке мереживо. Шнурівка ручної роботи.
+      </div>
+      <div class="process-detail">
+        <div class="detail-item">
+          <div class="detail-val">3–4</div>
+          <div class="detail-key">Тижні</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-val">4</div>
+          <div class="detail-key">Примірки</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-val">від 4500</div>
+          <div class="detail-key">Гривень</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="section-tag reveal">Відгуки</div>
+  <h2 class="section-title reveal reveal-delay-1" style="color:var(--black)">Що кажуть <em>клієнтки</em></h2>
+  <p class="section-sub reveal reveal-delay-2" style="color:rgba(8,8,8,0.5);margin-bottom:48px">Понад 340 щасливих клієнток по всій Україні та за кордоном</p>
+
+  <div class="testimonials-track">
+    <div class="testimonial-card reveal">
+      <div class="stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
+      <div class="testimonial-text">
+        «Ольга зробила неможливе — корсет сидить ідеально, хоча в мене нестандартна фігура. 
+        Весілля пройшло чудово, всі питали де я взяла таку красу.»
+      </div>
+      <div class="testimonial-author">
+        <div class="author-avatar">М</div>
+        <div>
+          <div class="author-name">Марія Коваль</div>
+          <div class="author-city">Львів · Весільний корсет</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-card reveal reveal-delay-1">
+      <div class="stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
+      <div class="testimonial-text">
+        «Замовляла вечірній корсет на корпоратив. Ольга — справжній професіонал. 
+        Дуже уважна до деталей і завжди на зв'язку. Буду замовляти ще!»
+      </div>
+      <div class="testimonial-author">
+        <div class="author-avatar">А</div>
+        <div>
+          <div class="author-name">Аліна Шевченко</div>
+          <div class="author-city">Київ · Вечірній корсет</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-card reveal reveal-delay-2">
+      <div class="stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
+      <div class="testimonial-text">
+        «Casual корсет для фотосесії — мрія! Матеріали відчуваються преміально, 
+        посадка бездоганна. Дякую за терплячість і увагу до моїх побажань.»
+      </div>
+      <div class="testimonial-author">
+        <div class="author-avatar">С</div>
+        <div>
+          <div class="author-name">Соломія Іваненко</div>
+          <div class="author-city">Львів · Casual корсет</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-deco">
+    <div class="contact-ornament reveal">Замовте<br>корсет</div>
+    <div class="contact-info reveal reveal-delay-1">
+      <div class="contact-row">
+        <div class="contact-icon">📍</div>
+        <div>
+          <div class="contact-row-label">Адреса</div>
+          <div class="contact-row-val">Львів, Галицький район</div>
+        </div>
+      </div>
+      <div class="contact-row">
+        <div class="contact-icon">📞</div>
+        <div>
+          <div class="contact-row-label">Телефон</div>
+          <div class="contact-row-val">+38 (050) 123 45 67</div>
+        </div>
+      </div>
+      <div class="contact-row">
+        <div class="contact-icon">✉</div>
+        <div>
+          <div class="contact-row-label">Email</div>
+          <div class="contact-row-val">olha@corset-master.lviv.ua</div>
+        </div>
+      </div>
+      <div class="contact-row">
+        <div class="contact-icon">📸</div>
+        <div>
+          <div class="contact-row-label">Instagram</div>
+          <div class="contact-row-val">@corset.master.lviv</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal reveal-delay-1">
+    <form class="contact-form" id="contactForm">
+      <div class="form-group">
+        <label class="form-label">Ваше ім'я</label>
+        <input type="text" class="form-input" placeholder="Наприклад, Марія" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Телефон</label>
+        <input type="tel" class="form-input" placeholder="+38 (0__) ___ __ __" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Тип послуги</label>
+        <select class="form-select form-input">
+          <option value="">Оберіть послугу...</option>
+          <option>Кастомний корсет</option>
+          <option>Ремонт / корекція</option>
+          <option>Консультація</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Розкажіть про ваш задум</label>
+        <textarea class="form-textarea form-input" placeholder="Привід, стиль, побажання..."></textarea>
+      </div>
+      <button type="submit" class="form-submit">Надіслати заявку →</button>
+    </form>
+    <div class="form-success" id="formSuccess">
+      <div class="form-success-icon">✦</div>
+      <div class="form-success-title">Заявку отримано</div>
+      <div class="form-success-text">Я зв'яжусь з вами протягом 2 годин.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo">Корсет Майстер</div>
+      <div class="footer-tagline">Ручна робота · Львів · Україна</div>
+    </div>
+    <div class="footer-nav-group">
+      <div class="footer-nav-title">Сторінки</div>
+      <a href="#about" class="footer-link">Про мене</a>
+      <a href="#portfolio" class="footer-link">Портфоліо</a>
+      <a href="#process" class="footer-link">Процес</a>
+      <a href="#contact" class="footer-link">Контакти</a>
+    </div>
+    <div class="footer-nav-group">
+      <div class="footer-nav-title">Послуги</div>
+      <a href="#" class="footer-link">Кастомний корсет</a>
+      <a href="#" class="footer-link">Ремонт та корекція</a>
+      <a href="#" class="footer-link">Консультація</a>
+    </div>
+    <div class="footer-nav-group">
+      <div class="footer-nav-title">Контакти</div>
+      <a href="tel:+380501234567" class="footer-link">+38 (050) 123 45 67</a>
+      <a href="#" class="footer-link">Telegram</a>
+      <a href="#" class="footer-link">Instagram</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 Корсет Майстер · Пошив корсетів у Львові · Всі права захищені</div>
+    <div class="footer-socials">
+      <a href="#" class="social-link">Tg</a>
+      <a href="#" class="social-link">Ig</a>
+      <a href="#" class="social-link">Fb</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx + 'px'; cursor.style.top = my + 'px'; });
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  // Navbar scroll
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Burger / mobile menu
+  const burger = document.getElementById('burger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  burger.addEventListener('click', () => {
+    burger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+    document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+  });
+  document.querySelectorAll('.mobile-nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+      burger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+
+  // Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Portfolio filter
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      document.querySelectorAll('.portfolio-grid .item').forEach(item => {
+        if (filter === 'all' || item.dataset.cat === filter) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // Form submit
+  document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    this.style.display = 'none';
+    document.getElementById('formSuccess').classList.add('show');
+  });
+
+  // Counter animation
+  function animateCounters() {
+    document.querySelectorAll('.counter-num, .stat-num').forEach(el => {
+      const text = el.textContent;
+      const num = parseFloat(text.replace(/[^0-9.]/g, ''));
+      if (!num) return;
+      const suffix = text.replace(/[0-9.]/g, '');
+      let start = 0;
+      const dur = 1800;
+      const step = timestamp => {
+        if (!start) start = timestamp;
+        const progress = Math.min((timestamp - start) / dur, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = (num < 10 ? (eased * num).toFixed(0) : Math.round(eased * num)) + suffix;
+        if (progress < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+  }
+  const heroObs = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) { animateCounters(); heroObs.disconnect(); }
+  }, { threshold: 0.3 });
+  heroObs.observe(document.getElementById('hero'));
+</script>
+</body>
+</html>

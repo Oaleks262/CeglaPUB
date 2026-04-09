@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Адмін — Паб Цегла</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900&family=Crimson+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brick:#A03820; --dark:#140C08; --neon:#E8FF47;
+    --brick-mid:#7A2A14; --brick-lite:#C44828;
+    --neon-glow:rgba(232,255,71,0.5); --cream:#F0E0C8;
+    --panel:#1E1008; --border:rgba(160,56,32,0.3);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--dark);font-family:'Crimson Pro',serif;color:var(--cream);min-height:100vh;display:flex;flex-direction:column}
+
+  /* TOPBAR */
+  .topbar{background:var(--panel);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:20px;height:52px;position:sticky;top:0;z-index:100}
+  .topbar-logo{font-family:'Playfair Display',serif;font-style:italic;font-size:1.4rem;color:var(--neon);text-shadow:0 0 10px var(--neon-glow);white-space:nowrap}
+  .topbar-logo span{color:rgba(240,224,200,.4);font-size:.8rem;font-style:normal;letter-spacing:2px;margin-left:8px}
+  .topbar-nav{display:flex;gap:2px;flex:1}
+  .nav-btn{background:none;border:none;color:rgba(240,224,200,.45);font-family:'Crimson Pro',serif;font-size:.78rem;letter-spacing:2px;text-transform:uppercase;padding:8px 16px;cursor:pointer;transition:all .2s;border-bottom:2px solid transparent}
+  .nav-btn:hover{color:var(--cream)}
+  .nav-btn.active{color:var(--neon);border-bottom-color:var(--neon)}
+  .topbar-actions{display:flex;gap:8px;margin-left:auto}
+  .btn-view{background:none;border:1px solid var(--border);color:rgba(240,224,200,.5);font-family:'Crimson Pro',serif;font-size:.75rem;letter-spacing:1.5px;text-transform:uppercase;padding:6px 14px;cursor:pointer;transition:all .2s;text-decoration:none;display:flex;align-items:center;gap:6px}
+  .btn-view:hover{color:var(--cream);border-color:var(--cream)}
+  .btn-view svg{width:13px;height:13px;fill:currentColor}
+
+  /* LAYOUT */
+  .layout{display:flex;flex:1;height:calc(100vh - 52px)}
+  .sidebar{width:220px;background:var(--panel);border-right:1px solid var(--border);padding:16px 0;flex-shrink:0;overflow-y:auto}
+  .main{flex:1;padding:24px;overflow-y:auto}
+
+  /* SIDEBAR */
+  .sidebar-section{padding:8px 16px 4px;font-size:.65rem;letter-spacing:3px;text-transform:uppercase;color:rgba(160,56,32,.7)}
+  .sidebar-item{display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;color:rgba(240,224,200,.5);font-size:.88rem;transition:all .2s;border-left:2px solid transparent}
+  .sidebar-item:hover{color:var(--cream);background:rgba(160,56,32,.1)}
+  .sidebar-item.active{color:var(--neon);border-left-color:var(--neon);background:rgba(232,255,71,.04)}
+  .sidebar-item svg{width:14px;height:14px;fill:currentColor;flex-shrink:0}
+  .sidebar-count{margin-left:auto;background:rgba(160,56,32,.3);color:rgba(240,224,200,.5);font-size:.65rem;padding:1px 6px;border-radius:0}
+  .sidebar-divider{height:1px;background:var(--border);margin:8px 0}
+
+  /* PANEL HEADER */
+  .panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;gap:12px}
+  .panel-title{font-family:'Playfair Display',serif;font-size:1.6rem;font-style:italic;color:var(--cream)}
+  .panel-actions{display:flex;gap:8px}
+
+  /* BUTTONS */
+  .btn{border:none;font-family:'Crimson Pro',serif;font-size:.8rem;letter-spacing:1.5px;text-transform:uppercase;padding:8px 18px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px}
+  .btn svg{width:13px;height:13px;fill:currentColor}
+  .btn-primary{background:var(--neon);color:var(--dark);font-weight:600}
+  .btn-primary:hover{background:#fff}
+  .btn-secondary{background:none;border:1px solid var(--border);color:rgba(240,224,200,.6)}
+  .btn-secondary:hover{border-color:var(--cream);color:var(--cream)}
+  .btn-danger{background:none;border:1px solid rgba(160,56,32,.5);color:var(--brick-lite)}
+  .btn-danger:hover{background:var(--brick);color:var(--cream);border-color:var(--brick)}
+  .btn-sm{padding:5px 12px;font-size:.72rem}
+
+  /* ITEMS TABLE */
+  .items-table{width:100%;border-collapse:collapse}
+  .items-table th{font-size:.65rem;letter-spacing:3px;text-transform:uppercase;color:rgba(160,56,32,.8);padding:8px 12px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap}
+  .items-table td{padding:11px 12px;border-bottom:1px solid rgba(160,56,32,.12);vertical-align:middle}
+  .items-table tr:hover td{background:rgba(160,56,32,.06)}
+
+  .item-row-name{font-family:'Playfair Display',serif;font-size:.95rem;color:var(--cream)}
+  .item-row-desc{font-size:.8rem;color:rgba(240,224,200,.4);font-style:italic;margin-top:2px}
+  .item-row-price{font-family:'Playfair Display',serif;color:var(--brick-lite);white-space:nowrap}
+  .item-row-unit{font-size:.72rem;color:rgba(196,72,40,.55)}
+  .item-row-actions{display:flex;gap:6px;justify-content:flex-end}
+
+  .badge-pill{font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;padding:2px 7px;border:1px solid;display:inline-block;white-space:nowrap}
+  .badge-pill.popular,.badge-pill.new{border-color:var(--neon);color:var(--neon)}
+  .badge-pill.recommend,.badge-pill.hot{border-color:var(--brick-lite);color:var(--brick-lite)}
+  .badge-pill.muted{border-color:rgba(240,224,200,.2);color:rgba(240,224,200,.35)}
+
+  /* TOGGLE */
+  .toggle{position:relative;width:36px;height:20px;cursor:pointer}
+  .toggle input{opacity:0;width:0;height:0;position:absolute}
+  .toggle-track{position:absolute;inset:0;background:rgba(160,56,32,.3);border:1px solid var(--border);transition:.2s}
+  .toggle input:checked + .toggle-track{background:var(--neon)}
+  .toggle-thumb{position:absolute;top:3px;left:3px;width:12px;height:12px;background:rgba(240,224,200,.5);transition:.2s}
+  .toggle input:checked ~ .toggle-thumb{left:19px;background:var(--dark)}
+
+  /* MODAL */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+  .modal-overlay.open{display:flex}
+  .modal{background:var(--panel);border:1px solid var(--border);width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
+  .modal-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+  .modal-title{font-family:'Playfair Display',serif;font-size:1.3rem;font-style:italic;color:var(--cream)}
+  .modal-close{background:none;border:none;color:rgba(240,224,200,.4);font-size:1.4rem;cursor:pointer;line-height:1;padding:4px}
+  .modal-close:hover{color:var(--cream)}
+  .modal-body{padding:24px}
+  .modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
+
+  /* FORM */
+  .form-row{margin-bottom:16px}
+  .form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+  label{display:block;font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:rgba(240,224,200,.5);margin-bottom:6px}
+  input,select,textarea{width:100%;background:rgba(20,12,8,.8);border:1px solid var(--border);color:var(--cream);font-family:'Crimson Pro',serif;font-size:.95rem;padding:9px 12px;outline:none;transition:border-color .2s}
+  input:focus,select:focus,textarea:focus{border-color:var(--neon)}
+  select option{background:var(--dark)}
+  textarea{resize:vertical;min-height:70px}
+
+  /* SETTINGS */
+  .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .settings-card{background:rgba(20,12,8,.6);border:1px solid var(--border);padding:20px}
+  .settings-card-title{font-size:.68rem;letter-spacing:3px;text-transform:uppercase;color:var(--brick-lite);margin-bottom:14px}
+
+  /* EMPTY */
+  .empty{text-align:center;padding:60px 20px;color:rgba(240,224,200,.25);font-style:italic}
+  .empty svg{width:40px;height:40px;fill:rgba(160,56,32,.3);margin-bottom:12px}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:24px;right:24px;background:var(--panel);border:1px solid var(--neon);color:var(--neon);padding:12px 20px;font-size:.85rem;letter-spacing:1px;z-index:300;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none}
+  .toast.show{opacity:1;transform:translateY(0)}
+
+  @media(max-width:700px){
+    .layout{flex-direction:column}
+    .sidebar{width:100%;height:auto;border-right:none;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;padding:8px}
+    .sidebar-section{display:none}
+    .sidebar-divider{display:none}
+    .settings-grid{grid-template-columns:1fr}
+    .form-row-2{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-logo">Цегла <span>АДМІН</span></div>
+  <div class="topbar-nav">
+    <button class="nav-btn active" onclick="showPanel('items',this)">Меню</button>
+    <button class="nav-btn" onclick="showPanel('categories',this)">Категорії</button>
+    <button class="nav-btn" onclick="showPanel('settings',this)">Налаштування</button>
+  </div>
+  <div class="topbar-actions">
+    <a href="/" target="_blank" class="btn-view">
+      <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.7 7.6 1 12c1.7 4.4 6 7.5 11 7.5s9.3-3.1 11-7.5c-1.7-4.4-6-7.5-11-7.5zm0 12.5a5 5 0 110-10 5 5 0 010 10zm0-8a3 3 0 100 6 3 3 0 000-6z"/></svg>
+      Переглянути меню
+    </a>
+  </div>
+</div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-section">Категорії</div>
+    <div id="sidebarCats"></div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">Дії</div>
+    <div class="sidebar-item" onclick="openItemModal()">
+      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      Додати позицію
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- PANEL: ITEMS -->
+    <div id="panel-items" class="panel">
+      <div class="panel-header">
+        <div class="panel-title" id="panelTitle">Всі позиції</div>
+        <div class="panel-actions">
+          <button class="btn btn-primary" onclick="openItemModal()">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            Додати
+          </button>
+        </div>
+      </div>
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th>Назва / Опис</th>
+            <th>Ціна</th>
+            <th>Бейдж</th>
+            <th>Видно</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="itemsBody"></tbody>
+      </table>
+    </div>
+
+    <!-- PANEL: CATEGORIES -->
+    <div id="panel-categories" class="panel" style="display:none">
+      <div class="panel-header">
+        <div class="panel-title">Категорії</div>
+        <div class="panel-actions">
+          <button class="btn btn-primary" onclick="openCatModal()">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            Додати
+          </button>
+        </div>
+      </div>
+      <table class="items-table">
+        <thead><tr><th>Назва</th><th>Іконка</th><th>Видно</th><th></th></tr></thead>
+        <tbody id="catsBody"></tbody>
+      </table>
+    </div>
+
+    <!-- PANEL: SETTINGS -->
+    <div id="panel-settings" class="panel" style="display:none">
+      <div class="panel-header">
+        <div class="panel-title">Налаштування</div>
+        <div class="panel-actions">
+          <button class="btn btn-primary" onclick="saveSettings()">Зберегти</button>
+        </div>
+      </div>
+      <div class="settings-grid">
+        <div class="settings-card">
+          <div class="settings-card-title">Основне</div>
+          <div class="form-row"><label>Назва пабу</label><input id="s-pubName" type="text"></div>
+          <div class="form-row"><label>Підзаголовок</label><input id="s-pubSubtitle" type="text"></div>
+          <div class="form-row"><label>Адреса</label><input id="s-address" type="text"></div>
+          <div class="form-row"><label>Рік відкриття</label><input id="s-since" type="text"></div>
+        </div>
+        <div class="settings-card">
+          <div class="settings-card-title">Знижки та сервіс</div>
+          <div class="form-row"><label>Сервісний збір (%)</label><input id="s-serviceCharge" type="number" min="0" max="30"></div>
+          <div class="form-row"><label>Знижка на ДН (%)</label><input id="s-birthdayDiscount" type="number" min="0" max="50"></div>
+          <div class="form-row"><label>Примітка в футері</label><textarea id="s-footerNote" rows="3"></textarea></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div>
+
+<!-- MODAL: ITEM -->
+<div class="modal-overlay" id="itemModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="itemModalTitle">Нова позиція</div>
+      <button class="modal-close" onclick="closeModal('itemModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="itemId">
+      <div class="form-row"><label>Категорія</label>
+        <select id="itemCat" onchange="updateSubcatSelect()"></select>
+      </div>
+      <div class="form-row"><label>Підкатегорія (необов'язково)</label>
+        <select id="itemSubcat"><option value="">— без підкатегорії —</option></select>
+      </div>
+      <div class="form-row"><label>Назва *</label><input id="itemName" type="text" placeholder="Цегла Лагер"></div>
+      <div class="form-row"><label>Опис</label><textarea id="itemDesc" placeholder="Короткий опис страви або напою"></textarea></div>
+      <div class="form-row-2">
+        <div><label>Ціна (грн) *</label><input id="itemPrice" type="number" placeholder="85"></div>
+        <div><label>Одиниця</label><input id="itemUnit" type="text" placeholder="грн / 0.5"></div>
+      </div>
+      <div class="form-row-2">
+        <div><label>Бейдж</label>
+          <select id="itemBadge">
+            <option value="">— немає —</option>
+            <option value="popular">Хіт</option>
+            <option value="new">Новинка</option>
+            <option value="recommend">Рекомендуємо</option>
+            <option value="hot">Гостре</option>
+            <option value="muted">Інший (сірий)</option>
+          </select>
+        </div>
+        <div><label>Текст бейджу</label><input id="itemBadgeLabel" type="text" placeholder="Хіт"></div>
+      </div>
+      <div class="form-row"><label>Деталі (показуються при наведенні)</label>
+        <input id="itemExtra" type="text" placeholder="ABV 4.8% · IBU 18 · …">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('itemModal')">Скасувати</button>
+      <button class="btn btn-primary" onclick="saveItem()">Зберегти</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: CATEGORY -->
+<div class="modal-overlay" id="catModal">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-header">
+      <div class="modal-title" id="catModalTitle">Нова категорія</div>
+      <button class="modal-close" onclick="closeModal('catModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="catId">
+      <div class="form-row"><label>Назва *</label><input id="catName" type="text" placeholder="Пиво & Ель"></div>
+      <div class="form-row"><label>Іконка</label>
+        <select id="catIcon">
+          <option value="beer">🍺 Пиво (кухоль)</option>
+          <option value="fork">🍴 Їжа (виделка)</option>
+          <option value="fire">🔥 Гаряче (вогонь)</option>
+          <option value="shot">🥃 Шоти (склянка)</option>
+          <option value="leaf">🌿 Безалкогольне (листок)</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('catModal')">Скасувати</button>
+      <button class="btn btn-primary" onclick="saveCat()">Зберегти</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+let DATA = { categories:[], subcategories:[], items:[], settings:{} };
+let currentCatFilter = null;
+
+// ─── LOAD ───────────────────────────────────────────────
+async function load() {
+  const res = await fetch('/api/admin/menu');
+  DATA = await res.json();
+  renderSidebar();
+  renderItems();
+  renderCats();
+  loadSettings();
+}
+
+// ─── SIDEBAR ────────────────────────────────────────────
+function renderSidebar() {
+  const el = document.getElementById('sidebarCats');
+  el.innerHTML = `
+    <div class="sidebar-item ${!currentCatFilter?'active':''}" onclick="filterByCat(null,this)">
+      <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      Всі позиції
+      <span class="sidebar-count">${DATA.items.length}</span>
+    </div>
+    ${DATA.categories.map(c => `
+      <div class="sidebar-item ${currentCatFilter===c.id?'active':''}" onclick="filterByCat('${c.id}',this)">
+        ${renderIcon(c.icon,14)}
+        ${c.name}
+        <span class="sidebar-count">${DATA.items.filter(i=>i.categoryId===c.id).length}</span>
+      </div>
+    `).join('')}
+  `;
+}
+
+function filterByCat(id, el) {
+  currentCatFilter = id;
+  document.querySelectorAll('.sidebar-item').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active');
+  const title = id ? DATA.categories.find(c=>c.id===id)?.name : 'Всі позиції';
+  document.getElementById('panelTitle').textContent = title;
+  showPanel('items', document.querySelector('.nav-btn'));
+  renderItems();
+}
+
+// ─── ITEMS ──────────────────────────────────────────────
+function renderItems() {
+  let items = currentCatFilter
+    ? DATA.items.filter(i => i.categoryId === currentCatFilter)
+    : DATA.items;
+  items = items.sort((a,b) => a.order - b.order);
+
+  const tbody = document.getElementById('itemsBody');
+  if (!items.length) {
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty">
+      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      <p>Позицій немає — додайте першу</p>
+    </div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = items.map(it => {
+    const cat = DATA.categories.find(c=>c.id===it.categoryId);
+    return `<tr>
+      <td>
+        <div class="item-row-name">${it.name}</div>
+        <div class="item-row-desc">${it.description||''}</div>
+        ${!currentCatFilter && cat ? `<div style="font-size:.68rem;color:rgba(160,56,32,.6);margin-top:2px;letter-spacing:1px;text-transform:uppercase">${cat.name}</div>` : ''}
+      </td>
+      <td><span class="item-row-price">${it.price}</span> <span class="item-row-unit">${it.unit}</span></td>
+      <td>${it.badge ? `<span class="badge-pill ${it.badge}">${it.badgeLabel||it.badge}</span>` : '—'}</td>
+      <td>
+        <label class="toggle">
+          <input type="checkbox" ${it.visible?'checked':''} onchange="toggleItem('${it.id}',this.checked)">
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+      </td>
+      <td>
+        <div class="item-row-actions">
+          <button class="btn btn-secondary btn-sm" onclick="openItemModal('${it.id}')">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteItem('${it.id}')">✕</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ─── CATS ────────────────────────────────────────────────
+function renderCats() {
+  const tbody = document.getElementById('catsBody');
+  tbody.innerHTML = DATA.categories.map(c => `<tr>
+    <td><div class="item-row-name">${c.name}</div></td>
+    <td>${renderIcon(c.icon,16)} <span style="font-size:.8rem;color:rgba(240,224,200,.4)">${c.icon}</span></td>
+    <td>
+      <label class="toggle">
+        <input type="checkbox" ${c.visible?'checked':''} onchange="toggleCat('${c.id}',this.checked)">
+        <div class="toggle-track"></div>
+        <div class="toggle-thumb"></div>
+      </label>
+    </td>
+    <td>
+      <div class="item-row-actions">
+        <button class="btn btn-secondary btn-sm" onclick="openCatModal('${c.id}')">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteCat('${c.id}')">✕</button>
+      </div>
+    </td>
+  </tr>`).join('');
+}
+
+// ─── SETTINGS ───────────────────────────────────────────
+function loadSettings() {
+  const s = DATA.settings;
+  document.getElementById('s-pubName').value       = s.pubName||'';
+  document.getElementById('s-pubSubtitle').value   = s.pubSubtitle||'';
+  document.getElementById('s-address').value       = s.address||'';
+  document.getElementById('s-since').value         = s.since||'';
+  document.getElementById('s-serviceCharge').value = s.serviceCharge||0;
+  document.getElementById('s-birthdayDiscount').value = s.birthdayDiscount||0;
+  document.getElementById('s-footerNote').value    = s.footerNote||'';
+}
+
+async function saveSettings() {
+  const body = {
+    pubName:          document.getElementById('s-pubName').value,
+    pubSubtitle:      document.getElementById('s-pubSubtitle').value,
+    address:          document.getElementById('s-address').value,
+    since:            document.getElementById('s-since').value,
+    serviceCharge:    Number(document.getElementById('s-serviceCharge').value),
+    birthdayDiscount: Number(document.getElementById('s-birthdayDiscount').value),
+    footerNote:       document.getElementById('s-footerNote').value,
+  };
+  await fetch('/api/admin/settings', { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+  DATA.settings = { ...DATA.settings, ...body };
+  toast('Налаштування збережено ✓');
+}
+
+// ─── ITEM MODAL ─────────────────────────────────────────
+function openItemModal(id) {
+  const modal = document.getElementById('itemModal');
+  const catSel = document.getElementById('itemCat');
+
+  catSel.innerHTML = DATA.categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+
+  if (id) {
+    const it = DATA.items.find(i=>i.id===id);
+    document.getElementById('itemModalTitle').textContent = 'Редагувати позицію';
+    document.getElementById('itemId').value        = it.id;
+    catSel.value                                   = it.categoryId;
+    updateSubcatSelect();
+    document.getElementById('itemSubcat').value    = it.subcategoryId||'';
+    document.getElementById('itemName').value      = it.name;
+    document.getElementById('itemDesc').value      = it.description;
+    document.getElementById('itemPrice').value     = it.price;
+    document.getElementById('itemUnit').value      = it.unit;
+    document.getElementById('itemBadge').value     = it.badge||'';
+    document.getElementById('itemBadgeLabel').value= it.badgeLabel||'';
+    document.getElementById('itemExtra').value     = it.extra||'';
+  } else {
+    document.getElementById('itemModalTitle').textContent = 'Нова позиція';
+    document.getElementById('itemId').value        = '';
+    if (currentCatFilter) catSel.value = currentCatFilter;
+    updateSubcatSelect();
+    ['itemName','itemDesc','itemPrice','itemUnit','itemBadge','itemBadgeLabel','itemExtra']
+      .forEach(id => { document.getElementById(id).value = ''; });
+    document.getElementById('itemUnit').value = 'грн';
+  }
+  modal.classList.add('open');
+}
+
+function updateSubcatSelect() {
+  const catId = document.getElementById('itemCat').value;
+  const subs = DATA.subcategories.filter(s=>s.categoryId===catId);
+  const sel = document.getElementById('itemSubcat');
+  sel.innerHTML = '<option value="">— без підкатегорії —</option>' +
+    subs.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
+}
+
+async function saveItem() {
+  const id = document.getElementById('itemId').value;
+  const body = {
+    categoryId:    document.getElementById('itemCat').value,
+    subcategoryId: document.getElementById('itemSubcat').value || null,
+    name:          document.getElementById('itemName').value.trim(),
+    description:   document.getElementById('itemDesc').value.trim(),
+    price:         Number(document.getElementById('itemPrice').value),
+    unit:          document.getElementById('itemUnit').value.trim(),
+    badge:         document.getElementById('itemBadge').value,
+    badgeLabel:    document.getElementById('itemBadgeLabel').value.trim(),
+    extra:         document.getElementById('itemExtra').value.trim(),
+  };
+  if (!body.name || !body.price) { toast('Заповніть назву та ціну'); return; }
+
+  if (id) {
+    const res = await fetch(`/api/admin/items/${id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+    const updated = await res.json();
+    const idx = DATA.items.findIndex(i=>i.id===id);
+    DATA.items[idx] = updated;
+  } else {
+    const res = await fetch('/api/admin/items', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+    const created = await res.json();
+    DATA.items.push(created);
+  }
+  closeModal('itemModal');
+  renderSidebar();
+  renderItems();
+  toast(id ? 'Позицію оновлено ✓' : 'Позицію додано ✓');
+}
+
+async function deleteItem(id) {
+  if (!confirm('Видалити позицію?')) return;
+  await fetch(`/api/admin/items/${id}`, { method:'DELETE' });
+  DATA.items = DATA.items.filter(i=>i.id!==id);
+  renderSidebar();
+  renderItems();
+  toast('Видалено ✓');
+}
+
+async function toggleItem(id, visible) {
+  await fetch(`/api/admin/items/${id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({visible}) });
+  const it = DATA.items.find(i=>i.id===id);
+  if (it) it.visible = visible;
+  toast(visible ? 'Позиція видима ✓' : 'Позиція прихована');
+}
+
+// ─── CAT MODAL ──────────────────────────────────────────
+function openCatModal(id) {
+  if (id) {
+    const c = DATA.categories.find(c=>c.id===id);
+    document.getElementById('catModalTitle').textContent = 'Редагувати категорію';
+    document.getElementById('catId').value   = c.id;
+    document.getElementById('catName').value = c.name;
+    document.getElementById('catIcon').value = c.icon;
+  } else {
+    document.getElementById('catModalTitle').textContent = 'Нова категорія';
+    document.getElementById('catId').value   = '';
+    document.getElementById('catName').value = '';
+    document.getElementById('catIcon').value = 'beer';
+  }
+  document.getElementById('catModal').classList.add('open');
+}
+
+async function saveCat() {
+  const id = document.getElementById('catId').value;
+  const body = {
+    name: document.getElementById('catName').value.trim(),
+    icon: document.getElementById('catIcon').value,
+  };
+  if (!body.name) { toast('Введіть назву'); return; }
+
+  if (id) {
+    const res = await fetch(`/api/admin/categories/${id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+    const updated = await res.json();
+    const idx = DATA.categories.findIndex(c=>c.id===id);
+    DATA.categories[idx] = updated;
+  } else {
+    const res = await fetch('/api/admin/categories', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+    const created = await res.json();
+    DATA.categories.push(created);
+  }
+  closeModal('catModal');
+  renderSidebar();
+  renderCats();
+  toast(id ? 'Категорію оновлено ✓' : 'Категорію додано ✓');
+}
+
+async function deleteCat(id) {
+  if (!confirm('Видалити категорію та всі її позиції?')) return;
+  await fetch(`/api/admin/categories/${id}`, { method:'DELETE' });
+  DATA.categories = DATA.categories.filter(c=>c.id!==id);
+  DATA.items       = DATA.items.filter(i=>i.categoryId!==id);
+  renderSidebar();
+  renderCats();
+  renderItems();
+  toast('Видалено ✓');
+}
+
+async function toggleCat(id, visible) {
+  await fetch(`/api/admin/categories/${id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({visible}) });
+  const c = DATA.categories.find(c=>c.id===id);
+  if (c) c.visible = visible;
+  toast(visible ? 'Категорія видима ✓' : 'Категорія прихована');
+}
+
+// ─── UI HELPERS ─────────────────────────────────────────
+function showPanel(id, btn) {
+  document.querySelectorAll('.panel').forEach(p=>p.style.display='none');
+  document.getElementById(`panel-${id}`).style.display='block';
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+const ICON_SVG = {
+  beer: '<svg viewBox="0 0 24 24"><path d="M5 3h11l1 4H4zm-1 5h13l-1.2 12a1 1 0 01-1 .9H6.2a1 1 0 01-1-.9zm6 2a1 1 0 00-1 1v6a1 1 0 002 0v-6a1 1 0 00-1-1zm3 0a1 1 0 00-1 1v6a1 1 0 002 0v-6a1 1 0 00-1-1zm4-2h2a2 2 0 012 2v3a2 2 0 01-2 2h-1"/></svg>',
+  fork: '<svg viewBox="0 0 24 24"><path d="M18 3a3 3 0 00-3 3v6c0 1.1.9 2 2 2v7h2v-7a2 2 0 002-2V6a3 3 0 00-3-3zM7 3v7H5V3H3v7a4 4 0 003 3.87V21h2v-7.13A4 4 0 0011 10V3H7z"/></svg>',
+  fire: '<svg viewBox="0 0 24 24"><path d="M12 2C9.5 5.5 7 8 7 12a5 5 0 0010 0c0-2-1-3-2-4.5-.8 1.5-1.2 2.5-1.2 3.5a2 2 0 01-4 0c0-2 1-4 2.2-9z"/></svg>',
+  shot: '<svg viewBox="0 0 24 24"><path d="M6 3l1.5 12A2 2 0 009.5 17h5a2 2 0 002-1.88L18 3H6zm4.5 3h3l-.5 4h-2z"/></svg>',
+  leaf: '<svg viewBox="0 0 24 24"><path d="M12 3C9 5 7 8.5 8 12.5a4 4 0 008 0c.5-2-.5-3.5-1.5-5-.5 1.5-.5 2.5-.5 3a2 2 0 01-4 0c0-2.5 1-4.5 2-7.5z"/></svg>',
+};
+
+function renderIcon(icon, size=16) {
+  const svg = ICON_SVG[icon]||ICON_SVG.beer;
+  return svg.replace('<svg ', `<svg style="width:${size}px;height:${size}px;fill:currentColor;vertical-align:middle" `);
+}
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target===el) el.classList.remove('open'); });
+});
+
+load();
+</script>
+</body>
+</html>
